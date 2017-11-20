@@ -11985,1755 +11985,2370 @@
     };
 
 }));
-/* Progress bars */
+/*!
+ * Bootstrap v3.3.6 (http://getbootstrap.com)
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under the MIT license
+ */
 
-function progress(percent, element) {
-    var progressBarWidth = percent * element.width() / 100;
-
-    element.find('.progressbar-value').animate({ width: progressBarWidth }, 1200);
+if (typeof jQuery === 'undefined') {
+  throw new Error('Bootstrap\'s JavaScript requires jQuery')
 }
 
-$(document).on('ready', function() {
-
-    $('.progressbar').each(function() {
-        var bar = $(this);
-        var max = $(this).attr('data-value');
-
-        progress(max, bar);
-    });
-
-});
-
-$(function(){
-
-    $('#header-right, .updateEasyPieChart, .complete-user-profile, #progress-dropdown, .progress-box').hover(function () {
-
-        $('.progressbar').each(function() {
-            var bar = $(this);
-            var max = $(this).attr('data-value');
-
-            progress(max, bar);
-        });
-
-    });
-
-});
-/*
- * Superclick v1.0.0 - jQuery menu widget
- * Copyright (c) 2013 Joel Birch
- *
- * Dual licensed under the MIT and GPL licenses:
- * 	http://www.opensource.org/licenses/mit-license.php
- * 	http://www.gnu.org/licenses/gpl.html
- */
-
-;(function($) {
-
-	var methods = (function(){
-		// private properties and methods go here
-		var c = {
-				bcClass: 'sf-breadcrumb',
-				menuClass: 'sf-js-enabled',
-				anchorClass: 'sf-with-ul',
-				menuArrowClass: 'sf-arrows'
-			},
-			outerClick = (function() {
-				$(window).load(function() {
-					$('body').children().on('click.superclick', function() {
-						var $allMenus = $('.sf-js-enabled');
-						$allMenus.superclick('reset');
-					});
-				});
-			})(),
-			toggleMenuClasses = function($menu, o) {
-				var classes = c.menuClass;
-				if (o.cssArrows) {
-					classes += ' ' + c.menuArrowClass;
-				}
-				$menu.toggleClass(classes);
-			},
-			setPathToCurrent = function($menu, o) {
-				return $menu.find('li.' + o.pathClass).slice(0, o.pathLevels)
-					.addClass(o.activeClass + ' ' + c.bcClass)
-						.filter(function() {
-							return ($(this).children('.sidebar-submenu').hide().show().length);
-						}).removeClass(o.pathClass);
-			},
-			toggleAnchorClass = function($li) {
-				$li.children('a').toggleClass(c.anchorClass);
-			},
-			toggleTouchAction = function($menu) {
-				var touchAction = $menu.css('ms-touch-action');
-				touchAction = (touchAction === 'pan-y') ? 'auto' : 'pan-y';
-				$menu.css('ms-touch-action', touchAction);
-			},
-			clickHandler = function(e) {
-				var $this = $(this),
-					$ul = $this.siblings('.sidebar-submenu'),
-					func;
-
-				if ($ul.length) {
-					func = ($ul.is(':hidden')) ? over : out;
-					$.proxy(func, $this.parent('li'))();
-					return false;
-				}
-			},
-			over = function() {
-				var $this = $(this),
-					o = getOptions($this);
-				$this.siblings().superclick('hide').end().superclick('show');
-			},
-			out = function() {
-				var $this = $(this),
-					o = getOptions($this);
-				$.proxy(close, $this, o)();
-			},
-			close = function(o) {
-				o.retainPath = ( $.inArray(this[0], o.$path) > -1);
-				this.superclick('hide');
-
-				if (!this.parents('.' + o.activeClass).length) {
-					o.onIdle.call(getMenu(this));
-					if (o.$path.length) {
-						$.proxy(over, o.$path)();
-					}
-				}
-			},
-			getMenu = function($el) {
-				return $el.closest('.' + c.menuClass);
-			},
-			getOptions = function($el) {
-				return getMenu($el).data('sf-options');
-			};
-
-		return {
-			// public methods
-			hide: function(instant) {
-				if (this.length) {
-					var $this = this,
-						o = getOptions($this);
-						if (!o) {
-							return this;
-						}
-					var not = (o.retainPath === true) ? o.$path : '',
-						$ul = $this.find('li.' + o.activeClass).add(this).not(not).removeClass(o.activeClass).children('.sidebar-submenu'),
-						speed = o.speedOut;
-
-					if (instant) {
-						$ul.show();
-						speed = 0;
-					}
-					o.retainPath = false;
-					o.onBeforeHide.call($ul);
-					$ul.stop(true, true).animate(o.animationOut, speed, function() {
-						var $this = $(this);
-						o.onHide.call($this);
-					});
-				}
-				return this;
-			},
-			show: function() {
-				var o = getOptions(this);
-				if (!o) {
-					return this;
-				}
-				var $this = this.addClass(o.activeClass),
-					$ul = $this.children('.sidebar-submenu');
-
-				o.onBeforeShow.call($ul);
-				$ul.stop(true, true).animate(o.animation, o.speed, function() {
-					o.onShow.call($ul);
-				});
-				return this;
-			},
-			destroy: function() {
-				return this.each(function(){
-					var $this = $(this),
-						o = $this.data('sf-options'),
-						$liHasUl = $this.find('li:has(ul)');
-					if (!o) {
-						return false;
-					}
-					toggleMenuClasses($this, o);
-					toggleAnchorClass($liHasUl);
-					toggleTouchAction($this);
-					// remove event handlers
-					$this.off('.superclick');
-					// clear animation's inline display style
-					$liHasUl.children('.sidebar-submenu').attr('style', function(i, style){
-						return style.replace(/display[^;]+;?/g, '');
-					});
-					// reset 'current' path classes
-					o.$path.removeClass(o.activeClass + ' ' + c.bcClass).addClass(o.pathClass);
-					$this.find('.' + o.activeClass).removeClass(o.activeClass);
-					o.onDestroy.call($this);
-					$this.removeData('sf-options');
-				});
-			},
-			reset: function() {
-				return this.each(function(){
-					var $menu = $(this),
-						o = getOptions($menu),
-						$openLis = $( $menu.find('.' + o.activeClass).toArray().reverse() );
-					$openLis.children('a').trigger('click');
-				});
-			},
-			init: function(op){
-				return this.each(function() {
-					var $this = $(this);
-					if ($this.data('sf-options')) {
-						return false;
-					}
-					var o = $.extend({}, $.fn.superclick.defaults, op),
-						$liHasUl = $this.find('li:has(ul)');
-					o.$path = setPathToCurrent($this, o);
-
-					$this.data('sf-options', o);
-
-					toggleMenuClasses($this, o);
-					toggleAnchorClass($liHasUl);
-					toggleTouchAction($this);
-					$this.on('click.superclick', 'a', clickHandler);
-
-					$liHasUl.not('.' + c.bcClass).superclick('hide',true);
-
-					o.onInit.call(this);
-				});
-			}
-		};
-	})();
-
-	$.fn.superclick = function(method, args) {
-		if (methods[method]) {
-			return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-		}
-		else if (typeof method === 'object' || ! method) {
-			return methods.init.apply(this, arguments);
-		}
-		else {
-			return $.error('Method ' +  method + ' does not exist on jQuery.fn.superclick');
-		}
-	};
-
-	$.fn.superclick.defaults = {
-		activeClass: 'sfHover', // keep 'hover' in classname for compatibility reasons
-		pathClass: 'overrideThisToUse',
-		pathLevels: 1,
-		animation: {opacity:'show'},
-		animationOut: {opacity:'hide'},
-		speed: 'normal',
-		speedOut: 'fast',
-		cssArrows: true,
-		onInit: $.noop,
-		onBeforeShow: $.noop,
-		onShow: $.noop,
-		onBeforeHide: $.noop,
-		onHide: $.noop,
-		onIdle: $.noop,
-		onDestroy: $.noop
-	};
-
-})(jQuery);
-(function( $ ) {
-    $.fn.simpleCheckbox = function(options) {
-        var defaults = {
-            newElementClass: 'switch-toggle',
-            activeElementClass: 'switch-on'
-        };
-        var options = $.extend(defaults, options);
-        this.each(function() {
-            //Assign the current checkbox to obj
-            var obj = $(this);
-            //Create new span element to be styled
-            var newObj = $('<div/>', {
-                'id': '#' + obj.attr('id'),
-                'class': options.newElementClass,
-                'style': 'display: block;'
-            }).insertAfter(this);
-            //Make sure pre-checked boxes are rendered as checked
-            if(obj.is(':checked')) {
-                newObj.addClass(options.activeElementClass);
-            }
-            obj.hide(); //Hide original checkbox
-            //Labels can be painful, let's fix that
-            if($('[for=' + obj.attr('id') + ']').length) {
-
-                var label = $('[for=' + obj.attr('id') + ']');
-                label.click(function() {
-                    newObj.trigger('click'); //Force the label to fire our element
-                    return false;
-                });
-            }
-            //Attach a click handler
-            newObj.click(function() {
-                //Assign current clicked object
-                var obj = $(this);
-                //Check the current state of the checkbox
-                if(obj.hasClass(options.activeElementClass)) {
-                    obj.removeClass(options.activeElementClass);
-                    $(obj.attr('id')).attr('checked',false);
-                } else {
-                    obj.addClass(options.activeElementClass);
-                    $(obj.attr('id')).attr('checked',true);
-                }
-                //Kill the click function
-                return false;
-            });
-        });
-    };
-})(jQuery);
-/*! Copyright (c) 2011 Piotr Rochala (http://rocha.la)
- * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
- * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- *
- * Version: 1.3.8
- *
- */
-(function($) {
-
-  $.fn.extend({
-    slimScroll: function(options) {
-
-      var defaults = {
-
-        // width in pixels of the visible scroll area
-        width : 'auto',
-
-        // height in pixels of the visible scroll area
-        height : '250px',
-
-        // width in pixels of the scrollbar and rail
-        size : '7px',
-
-        // scrollbar color, accepts any hex/color value
-        color: '#000',
-
-        // scrollbar position - left/right
-        position : 'right',
-
-        // distance in pixels between the side edge and the scrollbar
-        distance : '1px',
-
-        // default scroll position on load - top / bottom / $('selector')
-        start : 'top',
-
-        // sets scrollbar opacity
-        opacity : .4,
-
-        // enables always-on mode for the scrollbar
-        alwaysVisible : false,
-
-        // check if we should hide the scrollbar when user is hovering over
-        disableFadeOut : false,
-
-        // sets visibility of the rail
-        railVisible : false,
-
-        // sets rail color
-        railColor : '#333',
-
-        // sets rail opacity
-        railOpacity : .2,
-
-        // whether  we should use jQuery UI Draggable to enable bar dragging
-        railDraggable : true,
-
-        // defautlt CSS class of the slimscroll rail
-        railClass : 'slimScrollRail',
-
-        // defautlt CSS class of the slimscroll bar
-        barClass : 'slimScrollBar',
-
-        // defautlt CSS class of the slimscroll wrapper
-        wrapperClass : 'slimScrollDiv',
-
-        // check if mousewheel should scroll the window if we reach top/bottom
-        allowPageScroll : false,
-
-        // scroll amount applied to each mouse wheel step
-        wheelStep : 20,
-
-        // scroll amount applied when user is using gestures
-        touchScrollStep : 200,
-
-        // sets border radius
-        borderRadius: '7px',
-
-        // sets border radius of the rail
-        railBorderRadius : '7px'
-      };
-
-      var o = $.extend(defaults, options);
-
-      // do it for every element that matches selector
-      this.each(function(){
-
-      var isOverPanel, isOverBar, isDragg, queueHide, touchDif,
-        barHeight, percentScroll, lastScroll,
-        divS = '<div></div>',
-        minBarHeight = 30,
-        releaseScroll = false;
-
-        // used in event handlers and for better minification
-        var me = $(this);
-
-        // ensure we are not binding it again
-        if (me.parent().hasClass(o.wrapperClass))
-        {
-            // start from last bar position
-            var offset = me.scrollTop();
-
-            // find bar and rail
-            bar = me.siblings('.' + o.barClass);
-            rail = me.siblings('.' + o.railClass);
-
-            getBarHeight();
-
-            // check if we should scroll existing instance
-            if ($.isPlainObject(options))
-            {
-              // Pass height: auto to an existing slimscroll object to force a resize after contents have changed
-              if ( 'height' in options && options.height == 'auto' ) {
-                me.parent().css('height', 'auto');
-                me.css('height', 'auto');
-                var height = me.parent().parent().height();
-                me.parent().css('height', height);
-                me.css('height', height);
-              } else if ('height' in options) {
-                var h = options.height;
-                me.parent().css('height', h);
-                me.css('height', h);
-              }
-
-              if ('scrollTo' in options)
-              {
-                // jump to a static point
-                offset = parseInt(o.scrollTo);
-              }
-              else if ('scrollBy' in options)
-              {
-                // jump by value pixels
-                offset += parseInt(o.scrollBy);
-              }
-              else if ('destroy' in options)
-              {
-                // remove slimscroll elements
-                bar.remove();
-                rail.remove();
-                me.unwrap();
-                return;
-              }
-
-              // scroll content by the given offset
-              scrollContent(offset, false, true);
-            }
-
-            return;
-        }
-        else if ($.isPlainObject(options))
-        {
-            if ('destroy' in options)
-            {
-            	return;
-            }
-        }
-
-        // optionally set height to the parent's height
-        o.height = (o.height == 'auto') ? me.parent().height() : o.height;
-
-        // wrap content
-        var wrapper = $(divS)
-          .addClass(o.wrapperClass)
-          .css({
-            position: 'relative',
-            overflow: 'hidden',
-            width: o.width,
-            height: o.height
-          });
-
-        // update style for the div
-        me.css({
-          overflow: 'hidden',
-          width: o.width,
-          height: o.height
-        });
-
-        // create scrollbar rail
-        var rail = $(divS)
-          .addClass(o.railClass)
-          .css({
-            width: o.size,
-            height: '100%',
-            position: 'absolute',
-            top: 0,
-            display: (o.alwaysVisible && o.railVisible) ? 'block' : 'none',
-            'border-radius': o.railBorderRadius,
-            background: o.railColor,
-            opacity: o.railOpacity,
-            zIndex: 90
-          });
-
-        // create scrollbar
-        var bar = $(divS)
-          .addClass(o.barClass)
-          .css({
-            background: o.color,
-            width: o.size,
-            position: 'absolute',
-            top: 0,
-            opacity: o.opacity,
-            display: o.alwaysVisible ? 'block' : 'none',
-            'border-radius' : o.borderRadius,
-            BorderRadius: o.borderRadius,
-            MozBorderRadius: o.borderRadius,
-            WebkitBorderRadius: o.borderRadius,
-            zIndex: 99
-          });
-
-        // set position
-        var posCss = (o.position == 'right') ? { right: o.distance } : { left: o.distance };
-        rail.css(posCss);
-        bar.css(posCss);
-
-        // wrap it
-        me.wrap(wrapper);
-
-        // append to parent div
-        me.parent().append(bar);
-        me.parent().append(rail);
-
-        // make it draggable and no longer dependent on the jqueryUI
-        if (o.railDraggable){
-          bar.bind("mousedown", function(e) {
-            var $doc = $(document);
-            isDragg = true;
-            t = parseFloat(bar.css('top'));
-            pageY = e.pageY;
-
-            $doc.bind("mousemove.slimscroll", function(e){
-              currTop = t + e.pageY - pageY;
-              bar.css('top', currTop);
-              scrollContent(0, bar.position().top, false);// scroll content
-            });
-
-            $doc.bind("mouseup.slimscroll", function(e) {
-              isDragg = false;hideBar();
-              $doc.unbind('.slimscroll');
-            });
-            return false;
-          }).bind("selectstart.slimscroll", function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            return false;
-          });
-        }
-
-        // on rail over
-        rail.hover(function(){
-          showBar();
-        }, function(){
-          hideBar();
-        });
-
-        // on bar over
-        bar.hover(function(){
-          isOverBar = true;
-        }, function(){
-          isOverBar = false;
-        });
-
-        // show on parent mouseover
-        me.hover(function(){
-          isOverPanel = true;
-          showBar();
-          hideBar();
-        }, function(){
-          isOverPanel = false;
-          hideBar();
-        });
-
-        // support for mobile
-        me.bind('touchstart', function(e,b){
-          if (e.originalEvent.touches.length)
-          {
-            // record where touch started
-            touchDif = e.originalEvent.touches[0].pageY;
-          }
-        });
-
-        me.bind('touchmove', function(e){
-          // prevent scrolling the page if necessary
-          if(!releaseScroll)
-          {
-  		      e.originalEvent.preventDefault();
-		      }
-          if (e.originalEvent.touches.length)
-          {
-            // see how far user swiped
-            var diff = (touchDif - e.originalEvent.touches[0].pageY) / o.touchScrollStep;
-            // scroll content
-            scrollContent(diff, true);
-            touchDif = e.originalEvent.touches[0].pageY;
-          }
-        });
-
-        // set up initial height
-        getBarHeight();
-
-        // check start position
-        if (o.start === 'bottom')
-        {
-          // scroll content to bottom
-          bar.css({ top: me.outerHeight() - bar.outerHeight() });
-          scrollContent(0, true);
-        }
-        else if (o.start !== 'top')
-        {
-          // assume jQuery selector
-          scrollContent($(o.start).position().top, null, true);
-
-          // make sure bar stays hidden
-          if (!o.alwaysVisible) { bar.hide(); }
-        }
-
-        // attach scroll events
-        attachWheel(this);
-
-        function _onWheel(e)
-        {
-          // use mouse wheel only when mouse is over
-          if (!isOverPanel) { return; }
-
-          var e = e || window.event;
-
-          var delta = 0;
-          if (e.wheelDelta) { delta = -e.wheelDelta/120; }
-          if (e.detail) { delta = e.detail / 3; }
-
-          var target = e.target || e.srcTarget || e.srcElement;
-          if ($(target).closest('.' + o.wrapperClass).is(me.parent())) {
-            // scroll content
-            scrollContent(delta, true);
-          }
-
-          // stop window scroll
-          if (e.preventDefault && !releaseScroll) { e.preventDefault(); }
-          if (!releaseScroll) { e.returnValue = false; }
-        }
-
-        function scrollContent(y, isWheel, isJump)
-        {
-          releaseScroll = false;
-          var delta = y;
-          var maxTop = me.outerHeight() - bar.outerHeight();
-
-          if (isWheel)
-          {
-            // move bar with mouse wheel
-            delta = parseInt(bar.css('top')) + y * parseInt(o.wheelStep) / 100 * bar.outerHeight();
-
-            // move bar, make sure it doesn't go out
-            delta = Math.min(Math.max(delta, 0), maxTop);
-
-            // if scrolling down, make sure a fractional change to the
-            // scroll position isn't rounded away when the scrollbar's CSS is set
-            // this flooring of delta would happened automatically when
-            // bar.css is set below, but we floor here for clarity
-            delta = (y > 0) ? Math.ceil(delta) : Math.floor(delta);
-
-            // scroll the scrollbar
-            bar.css({ top: delta + 'px' });
-          }
-
-          // calculate actual scroll amount
-          percentScroll = parseInt(bar.css('top')) / (me.outerHeight() - bar.outerHeight());
-          delta = percentScroll * (me[0].scrollHeight - me.outerHeight());
-
-          if (isJump)
-          {
-            delta = y;
-            var offsetTop = delta / me[0].scrollHeight * me.outerHeight();
-            offsetTop = Math.min(Math.max(offsetTop, 0), maxTop);
-            bar.css({ top: offsetTop + 'px' });
-          }
-
-          // scroll content
-          me.scrollTop(delta);
-
-          // fire scrolling event
-          me.trigger('slimscrolling', ~~delta);
-
-          // ensure bar is visible
-          showBar();
-
-          // trigger hide when scroll is stopped
-          hideBar();
-        }
-
-        function attachWheel(target)
-        {
-          if (window.addEventListener)
-          {
-            target.addEventListener('DOMMouseScroll', _onWheel, false );
-            target.addEventListener('mousewheel', _onWheel, false );
-          }
-          else
-          {
-            document.attachEvent("onmousewheel", _onWheel)
-          }
-        }
-
-        function getBarHeight()
-        {
-          // calculate scrollbar height and make sure it is not too small
-          barHeight = Math.max((me.outerHeight() / me[0].scrollHeight) * me.outerHeight(), minBarHeight);
-          bar.css({ height: barHeight + 'px' });
-
-          // hide scrollbar if content is not long enough
-          var display = barHeight == me.outerHeight() ? 'none' : 'block';
-          bar.css({ display: display });
-        }
-
-        function showBar()
-        {
-          // recalculate bar height
-          getBarHeight();
-          clearTimeout(queueHide);
-
-          // when bar reached top or bottom
-          if (percentScroll == ~~percentScroll)
-          {
-            //release wheel
-            releaseScroll = o.allowPageScroll;
-
-            // publish approporiate event
-            if (lastScroll != percentScroll)
-            {
-                var msg = (~~percentScroll == 0) ? 'top' : 'bottom';
-                me.trigger('slimscroll', msg);
-            }
-          }
-          else
-          {
-            releaseScroll = false;
-          }
-          lastScroll = percentScroll;
-
-          // show only when required
-          if(barHeight >= me.outerHeight()) {
-            //allow window scroll
-            releaseScroll = true;
-            return;
-          }
-          bar.stop(true,true).fadeIn('fast');
-          if (o.railVisible) { rail.stop(true,true).fadeIn('fast'); }
-        }
-
-        function hideBar()
-        {
-          // only hide when options allow it
-          if (!o.alwaysVisible)
-          {
-            queueHide = setTimeout(function(){
-              if (!(o.disableFadeOut && isOverPanel) && !isOverBar && !isDragg)
-              {
-                bar.fadeOut('slow');
-                rail.fadeOut('slow');
-              }
-            }, 1000);
-          }
-        }
-
-      });
-
-      // maintain chainability
-      return this;
++function ($) {
+  'use strict';
+  var version = $.fn.jquery.split(' ')[0].split('.')
+  if ((version[0] < 2 && version[1] < 9) || (version[0] == 1 && version[1] == 9 && version[2] < 1) || (version[0] > 2)) {
+    throw new Error('Bootstrap\'s JavaScript requires jQuery version 1.9.1 or higher, but lower than version 3')
+  }
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: transition.js v3.3.6
+ * http://getbootstrap.com/javascript/#transitions
+ * ========================================================================
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
+  // ============================================================
+
+  function transitionEnd() {
+    var el = document.createElement('bootstrap')
+
+    var transEndEventNames = {
+      WebkitTransition : 'webkitTransitionEnd',
+      MozTransition    : 'transitionend',
+      OTransition      : 'oTransitionEnd otransitionend',
+      transition       : 'transitionend'
     }
-  });
 
-  $.fn.extend({
-    slimscroll: $.fn.slimScroll
-  });
-
-})(jQuery);
-
-// -----------------------------------
-// Slidebars
-// Development version, do not use this in your site, use the latest in the distribution folder.
-// http://plugins.adchsm.me/slidebars/
-//
-// Written by Adam Smith
-// http://www.adchsm.me/
-//
-// Released under MIT License
-// http://plugins.adchsm.me/slidebars/license.txt
-//
-// ---------------------
-// Index of Slidebars.js
-//
-// 001 - Default Settings
-// 002 - Feature Detection
-// 003 - User Agents
-// 004 - Setup
-// 005 - Animation
-// 006 - Operations
-// 007 - API
-// 008 - User Input
-
-;(function($) {
-
-    $.slidebars = function(options) {
-
-        // ----------------------
-        // 001 - Default Settings
-
-        var settings = $.extend({
-            siteClose: true, // true or false - Enable closing of Slidebars by clicking on #sb-site.
-            scrollLock: false, // true or false - Prevent scrolling of site when a Slidebar is open.
-            disableOver: false, // integer or false - Hide Slidebars over a specific width.
-            hideControlClasses: false // true or false - Hide controls at same width as disableOver.
-        }, options);
-
-        // -----------------------
-        // 002 - Feature Detection
-
-        var test = document.createElement('div').style, // Create element to test on.
-            supportTransition = false, // Variable for testing transitions.
-            supportTransform = false; // variable for testing transforms.
-
-        // Test for CSS Transitions
-        if (test.MozTransition === '' || test.WebkitTransition === '' || test.OTransition === '' || test.transition === '') supportTransition = true;
-
-        // Test for CSS Transforms
-        if (test.MozTransform === '' || test.WebkitTransform === '' || test.OTransform === '' || test.transform === '') supportTransform = true;
-
-        // -----------------
-        // 003 - User Agents
-
-        var ua = navigator.userAgent, // Get user agent string.
-            android = false, // Variable for storing android version.
-            iOS = false; // Variable for storing iOS version.
-
-        if (/Android/.test(ua)) { // Detect Android in user agent string.
-            android = ua.substr(ua.indexOf('Android')+8, 3); // Set version of Android.
-        } else if (/(iPhone|iPod|iPad)/.test(ua)) { // Detect iOS in user agent string.
-            iOS = ua.substr(ua.indexOf('OS ')+3, 3).replace('_', '.'); // Set version of iOS.
-        }
-
-        if (android && android < 3 || iOS && iOS < 5) $('html').addClass('sb-static'); // Add helper class for older versions of Android & iOS.
-
-        // -----------
-        // 004 - Setup
-
-        // Site container
-        var $site = $('#sb-site, .sb-site-container'); // Cache the selector.
-
-        // Left Slidebar
-        if ($('.sb-left').length) { // Check if the left Slidebar exists.
-            var $left = $('.sb-left'), // Cache the selector.
-                leftActive = false; // Used to check whether the left Slidebar is open or closed.
-        }
-
-        // Right Slidebar
-        if ($('.sb-right').length) { // Check if the right Slidebar exists.
-            var $right = $('.sb-right'), // Cache the selector.
-                rightActive = false; // Used to check whether the right Slidebar is open or closed.
-        }
-
-        var init = false, // Initialisation variable.
-            windowWidth = $(window).width(), // Get width of window.
-            $controls = $('.sb-toggle-left, .sb-toggle-right, .sb-open-left, .sb-open-right, .sb-close'), // Cache the control classes.
-            $slide = $('.sb-slide'); // Cache users elements to animate.
-
-        // Initailise Slidebars
-        function initialise() {
-            if (!settings.disableOver || (typeof settings.disableOver === 'number' && settings.disableOver >= windowWidth)) { // False or larger than window size.
-                init = true; // true enabled Slidebars to open.
-                $('html').addClass('sb-init'); // Add helper class.
-                if (settings.hideControlClasses) $controls.removeClass('sb-hide'); // Remove class just incase Slidebars was originally disabled.
-                css(); // Set required inline styles.
-            } else if (typeof settings.disableOver === 'number' && settings.disableOver < windowWidth) { // Less than window size.
-                init = false; // false stop Slidebars from opening.
-                $('html').removeClass('sb-init'); // Remove helper class.
-                if (settings.hideControlClasses) $controls.addClass('sb-hide'); // Hide controls
-                $site.css('minHeight', ''); // Remove minimum height.
-                if (leftActive || rightActive) close(); // Close Slidebars if open.
-            }
-        }
-        initialise();
-
-        // Inline CSS
-        function css() {
-            // Set minimum height.
-            $site.css('minHeight', ''); // Reset minimum height.
-            $site.css('minHeight', $('html').height() + 'px'); // Set minimum height of the site to the minimum height of the html.
-
-            // Custom Slidebar widths.
-            if ($left && $left.hasClass('sb-width-custom')) $left.css('width', $left.attr('data-sb-width')); // Set user custom width.
-            if ($right && $right.hasClass('sb-width-custom')) $right.css('width', $right.attr('data-sb-width')); // Set user custom width.
-
-            // Set off-canvas margins for Slidebars with push and overlay animations.
-            if ($left && ($left.hasClass('sb-style-push') || $left.hasClass('sb-style-overlay'))) $left.css('marginLeft', '-' + $left.css('width'));
-            if ($right && ($right.hasClass('sb-style-push') || $right.hasClass('sb-style-overlay'))) $right.css('marginRight', '-' + $right.css('width'));
-
-            // Site scroll locking.
-            if (settings.scrollLock) $('html').addClass('sb-scroll-lock');
-        }
-
-        // Resize Functions
-        $(window).resize(function() {
-            var resizedWindowWidth = $(window).width(); // Get resized window width.
-            if (windowWidth !== resizedWindowWidth) { // Slidebars is running and window was actually resized.
-                windowWidth = resizedWindowWidth; // Set the new window width.
-                initialise(); // Call initalise to see if Slidebars should still be running.
-                if (leftActive) open('left'); // If left Slidebar is open, calling open will ensure it is the correct size.
-                if (rightActive) open('right'); // If right Slidebar is open, calling open will ensure it is the correct size.
-            }
-        });
-        // I may include a height check along side a width check here in future.
-
-        // ---------------
-        // 005 - Animation
-
-        var animation; // Animation type.
-
-        // Set animation type.
-        if (supportTransition && supportTransform) { // Browser supports css transitions and transforms.
-            animation = 'translate'; // Translate for browsers that support it.
-            if (android && android < 4.4) animation = 'side'; // Android supports both, but can't translate any fixed positions, so use left instead.
-        } else {
-            animation = 'jQuery'; // Browsers that don't support css transitions and transitions.
-        }
-
-        // Animate mixin.
-        function animate(object, amount, side) {
-            // Choose selectors depending on animation style.
-            var selector;
-
-            if (object.hasClass('sb-style-push')) {
-                selector = $site.add(object).add($slide); // Push - Animate site, Slidebar and user elements.
-            } else if (object.hasClass('sb-style-overlay')) {
-                selector = object; // Overlay - Animate Slidebar only.
-            } else {
-                selector = $site.add($slide); // Reveal - Animate site and user elements.
-            }
-
-            // Apply animation
-            if (animation === 'translate') {
-                selector.css('transform', 'translate(' + amount + ')'); // Apply the animation.
-
-            } else if (animation === 'side') {
-                if (amount[0] === '-') amount = amount.substr(1); // Remove the '-' from the passed amount for side animations.
-                if (amount !== '0px') selector.css(side, '0px'); // Add a 0 value so css transition works.
-                setTimeout(function() { // Set a timeout to allow the 0 value to be applied above.
-                    selector.css(side, amount); // Apply the animation.
-                }, 1);
-
-            } else if (animation === 'jQuery') {
-                if (amount[0] === '-') amount = amount.substr(1); // Remove the '-' from the passed amount for jQuery animations.
-                var properties = {};
-                properties[side] = amount;
-                selector.stop().animate(properties, 400); // Stop any current jQuery animation before starting another.
-            }
-
-            // If closed, remove the inline styling on completion of the animation.
-            setTimeout(function() {
-                if (amount === '0px') {
-                    selector.removeAttr('style');
-                    css();
-                }
-            }, 400);
-        }
-
-        // ----------------
-        // 006 - Operations
-
-        // Open a Slidebar
-        function open(side, callback) {
-            // Check to see if opposite Slidebar is open.
-            if (side === 'left' && $left && rightActive || side === 'right' && $right && leftActive) { // It's open, close it, then continue.
-                close();
-                setTimeout(proceed, 400);
-            } else { // Its not open, continue.
-                proceed();
-            }
-
-            // Open
-            function proceed() {
-                if (init && side === 'left' && $left) { // Slidebars is initiated, left is in use and called to open.
-                    $('html').addClass('sb-active sb-active-left'); // Add active classes.
-                    $left.addClass('sb-active');
-                    animate($left, $left.css('width'), 'left'); // Animation
-                    setTimeout(function() {
-                        leftActive = true;
-                        if (typeof callback === 'function') callback(); // Run callback function.
-                    }, 400); // Set active variables.
-                } else if (init && side === 'right' && $right) { // Slidebars is initiated, right is in use and called to open.
-                    $('html').addClass('sb-active sb-active-right'); // Add active classes.
-                    $right.addClass('sb-active');
-                    animate($right, '-' + $right.css('width'), 'right'); // Animation
-                    setTimeout(function() {
-                        rightActive = true;
-                        if (typeof callback === 'function') callback(); // Run callback function.
-                    }, 400); // Set active variables.
-                }
-            }
-        }
-
-        // Close either Slidebar
-        function close(callback) {
-            if (leftActive || rightActive) { // If a Slidebar is open.
-                if (leftActive) {
-                    animate($left, '0px', 'left'); // Animation
-                    leftActive = false;
-                }
-                if (rightActive) {
-                    animate($right, '0px', 'right'); // Animation
-                    rightActive = false;
-                }
-
-                setTimeout(function() { // Wait for closing animation to finish.
-                    $('html').removeClass('sb-active sb-active-left sb-active-right'); // Remove active classes.
-                    if ($left) $left.removeClass('sb-active');
-                    if ($right) $right.removeClass('sb-active');
-                    if (typeof callback === 'function') callback(); // Run callback function.
-                }, 400);
-            }
-        }
-
-        // Toggle either Slidebar
-        function toggle(side, callback) {
-            if (side === 'left' && $left) { // If left Slidebar is called and in use.
-                if (!leftActive) {
-                    open('left', callback); // Slidebar is closed, open it.
-                } else {
-                    close(null, callback); // Slidebar is open, close it.
-                }
-            }
-            if (side === 'right' && $right) { // If right Slidebar is called and in use.
-                if (!rightActive) {
-                    open('right', callback); // Slidebar is closed, open it.
-                } else {
-                    close(null, callback); // Slidebar is open, close it.
-                }
-            }
-        }
-
-        // ---------
-        // 007 - API
-
-        this.slidebars = {
-            open: open, // Maps user variable name to the open method.
-            close: close, // Maps user variable name to the close method.
-            toggle: toggle, // Maps user variable name to the toggle method.
-            init: function() { // Returns true or false whether Slidebars are running or not.
-                return init; // Returns true or false whether Slidebars are running.
-            },
-            reInit: initialise, // Run the init method to check if the plugin should still be running.
-            resetCSS: css, // Reset inline
-            active: function(side) { // Returns true or false whether Slidebar is open or closed.
-                if (side === 'left' && $left) return leftActive;
-                if (side === 'right' && $right) return rightActive;
-            },
-            destroy: function(side) { // Removes the Slidebar from the DOM.
-                if (side === 'left' && $left) {
-                    if (leftActive) close(); // Close if its open.
-                    setTimeout(function() {
-                        $left.remove(); // Remove it.
-                        $left = false; // Set variable to false so it cannot be opened again.
-                    }, 400);
-                }
-                if (side === 'right' && $right) {
-                    if (rightActive) close(); // Close if its open.
-                    setTimeout(function() {
-                        $right.remove(); // Remove it.
-                        $right = false; // Set variable to false so it cannot be opened again.
-                    }, 400);
-                }
-            }
-        };
-
-        // ----------------
-        // 008 - User Input
-
-        function eventHandler(event, selector) {
-            event.stopPropagation(); // Stop event bubbling.
-            event.preventDefault(); // Prevent default behaviour.
-            if (event.type === 'touchend') selector.off('click'); // If event type was touch, turn off clicks to prevent phantom clicks.
-        }
-
-        // Toggle left Slidebar
-        $('.sb-toggle-left').on('touchend click', function(event) {
-            eventHandler(event, $(this)); // Handle the event.
-            toggle('left'); // Toggle the left Slidbar.
-        });
-
-        // Toggle right Slidebar
-        $('.sb-toggle-right').on('touchend click', function(event) {
-            eventHandler(event, $(this)); // Handle the event.
-            toggle('right'); // Toggle the right Slidbar.
-        });
-
-        // Open left Slidebar
-        $('.sb-open-left').on('touchend click', function(event) {
-            eventHandler(event, $(this)); // Handle the event.
-            open('left'); // Open the left Slidebar.
-        });
-
-        // Open right Slidebar
-        $('.sb-open-right').on('touchend click', function(event) {
-            eventHandler(event, $(this)); // Handle the event.
-            open('right'); // Open the right Slidebar.
-        });
-
-        // Close Slidebar
-        $('.sb-close').on('touchend click', function(event) {
-            if ( $(this).is('a') || $(this).children().is('a') ) { // Is a link or contains a link.
-                if ( event.type === 'click' ) { // Make sure the user wanted to follow the link.
-                    event.preventDefault(); // Stop default behaviour.
-                    var href = ( $(this).is('a') ? $(this).attr('href') : $(this).find('a').attr('href') ); // Get the href.
-                    close(function() { // Close Slidebar and pass callback to redirect.
-                        window.location = href;
-                    });
-                }
-            } else { // Just a normal control class.
-                eventHandler(event, $(this)); // Handle the event.
-                close(); // Close Slidebar.
-            }
-        });
-
-        // Close Slidebar via site
-        $site.on('touchend click', function(event) {
-            if (settings.siteClose && (leftActive || rightActive)) { // If settings permit closing by site and left or right Slidebar is open.
-                eventHandler(event, $(this)); // Handle the event.
-                close(); // Close it.
-            }
-        });
-
-    }; // End Slidebars function.
-
-}) (jQuery);
-
-/* Slidebars */
-
-(function($) {
-    $(document).ready(function() {
-        $.slidebars();
-    });
-})(jQuery);
-
-// Generated by CoffeeScript 1.6.2
-/*
- Easy pie chart is a jquery plugin to display simple animated pie charts for only one value
-
- Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
- and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
-
- Built on top of the jQuery library (http://jquery.com)
-
- @source: http://github.com/rendro/easy-pie-chart/
- @autor: Robert Fleischmann
- @version: 1.2.1
-
- Inspired by: http://dribbble.com/shots/631074-Simple-Pie-Charts-II?list=popular&offset=210
- Thanks to Philip Thrasher for the jquery plugin boilerplate for coffee script
- */
-(function($) {
-    $.easyPieChart = function(el, options) {
-        var addScaleLine, animateLine, drawLine, easeInOutQuad, rAF, renderBackground, renderScale, renderTrack,
-            _this = this;
-
-        this.el = el;
-        this.$el = $(el);
-        this.$el.data("easyPieChart", this);
-        this.init = function() {
-            var percent, scaleBy;
-
-            _this.options = $.extend({}, $.easyPieChart.defaultOptions, options);
-            percent = parseInt(_this.$el.data('percent'), 10);
-            _this.percentage = 0;
-            _this.canvas = $("<canvas width='" + _this.options.size + "' height='" + _this.options.size + "'></canvas>").get(0);
-            _this.$el.append(_this.canvas);
-            if (typeof G_vmlCanvasManager !== "undefined" && G_vmlCanvasManager !== null) {
-                G_vmlCanvasManager.initElement(_this.canvas);
-            }
-            _this.ctx = _this.canvas.getContext('2d');
-            if (window.devicePixelRatio > 1) {
-                scaleBy = window.devicePixelRatio;
-                $(_this.canvas).css({
-                    width: _this.options.size,
-                    height: _this.options.size
-                });
-                _this.canvas.width *= scaleBy;
-                _this.canvas.height *= scaleBy;
-                _this.ctx.scale(scaleBy, scaleBy);
-            }
-            _this.ctx.translate(_this.options.size / 2, _this.options.size / 2);
-            _this.ctx.rotate(_this.options.rotate * Math.PI / 180);
-            _this.$el.addClass('easyPieChart');
-            _this.$el.css({
-                width: _this.options.size,
-                height: _this.options.size,
-                lineHeight: "" + _this.options.size + "px"
-            });
-            _this.update(percent);
-            return _this;
-        };
-        this.update = function(percent) {
-            percent = parseFloat(percent) || 0;
-            if (_this.options.animate === false) {
-                drawLine(percent);
-            } else {
-                animateLine(_this.percentage, percent);
-            }
-            return _this;
-        };
-        renderScale = function() {
-            var i, _i, _results;
-
-            _this.ctx.fillStyle = _this.options.scaleColor;
-            _this.ctx.lineWidth = 1;
-            _results = [];
-            for (i = _i = 0; _i <= 24; i = ++_i) {
-                _results.push(addScaleLine(i));
-            }
-            return _results;
-        };
-        addScaleLine = function(i) {
-            var offset;
-
-            offset = i % 6 === 0 ? 0 : _this.options.size * 0.017;
-            _this.ctx.save();
-            _this.ctx.rotate(i * Math.PI / 12);
-            _this.ctx.fillRect(_this.options.size / 2 - offset, 0, -_this.options.size * 0.05 + offset, 1);
-            _this.ctx.restore();
-        };
-        renderTrack = function() {
-            var offset;
-
-            offset = _this.options.size / 2 - _this.options.lineWidth / 2;
-            if (_this.options.scaleColor !== false) {
-                offset -= _this.options.size * 0.08;
-            }
-            _this.ctx.beginPath();
-            _this.ctx.arc(0, 0, offset, 0, Math.PI * 2, true);
-            _this.ctx.closePath();
-            _this.ctx.strokeStyle = _this.options.trackColor;
-            _this.ctx.lineWidth = _this.options.lineWidth;
-            _this.ctx.stroke();
-        };
-        renderBackground = function() {
-            if (_this.options.scaleColor !== false) {
-                renderScale();
-            }
-            if (_this.options.trackColor !== false) {
-                renderTrack();
-            }
-        };
-        drawLine = function(percent) {
-            var offset;
-
-            renderBackground();
-            _this.ctx.strokeStyle = $.isFunction(_this.options.barColor) ? _this.options.barColor(percent) : _this.options.barColor;
-            _this.ctx.lineCap = _this.options.lineCap;
-            _this.ctx.lineWidth = _this.options.lineWidth;
-            offset = _this.options.size / 2 - _this.options.lineWidth / 2;
-            if (_this.options.scaleColor !== false) {
-                offset -= _this.options.size * 0.08;
-            }
-            _this.ctx.save();
-            _this.ctx.rotate(-Math.PI / 2);
-            _this.ctx.beginPath();
-            _this.ctx.arc(0, 0, offset, 0, Math.PI * 2 * percent / 100, false);
-            _this.ctx.stroke();
-            _this.ctx.restore();
-        };
-        rAF = (function() {
-            return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function(callback) {
-                return window.setTimeout(callback, 1000 / 60);
-            };
-        })();
-        animateLine = function(from, to) {
-            var anim, startTime;
-
-            _this.options.onStart.call(_this);
-            _this.percentage = to;
-            startTime = Date.now();
-            anim = function() {
-                var currentValue, process;
-
-                process = Date.now() - startTime;
-                if (process < _this.options.animate) {
-                    rAF(anim);
-                }
-                _this.ctx.clearRect(-_this.options.size / 2, -_this.options.size / 2, _this.options.size, _this.options.size);
-                renderBackground.call(_this);
-                currentValue = [easeInOutQuad(process, from, to - from, _this.options.animate)];
-                _this.options.onStep.call(_this, currentValue);
-                drawLine.call(_this, currentValue);
-                if (process >= _this.options.animate) {
-                    return _this.options.onStop.call(_this);
-                }
-            };
-            rAF(anim);
-        };
-        easeInOutQuad = function(t, b, c, d) {
-            var easeIn, easing;
-
-            easeIn = function(t) {
-                return Math.pow(t, 2);
-            };
-            easing = function(t) {
-                if (t < 1) {
-                    return easeIn(t);
-                } else {
-                    return 2 - easeIn((t / 2) * -2 + 2);
-                }
-            };
-            t /= d / 2;
-            return c / 2 * easing(t) + b;
-        };
-        return this.init();
-    };
-    $.easyPieChart.defaultOptions = {
-        barColor: '#ef1e25',
-        trackColor: '#f2f2f2',
-        scaleColor: '#dfe0e0',
-        lineCap: 'round',
-        rotate: 0,
-        size: 110,
-        lineWidth: 3,
-        animate: false,
-        onStart: $.noop,
-        onStop: $.noop,
-        onStep: $.noop
-    };
-    $.fn.easyPieChart = function(options) {
-        return $.each(this, function(i, el) {
-            var $el, instanceOptions;
-
-            $el = $(el);
-            if (!$el.data('easyPieChart')) {
-                instanceOptions = $.extend({}, options, $el.data());
-                return $el.data('easyPieChart', new $.easyPieChart(el, instanceOptions));
-            }
-        });
-    };
-    return void 0;
-})(jQuery);
-/* Pie gauges */
-
-var initPieChart = function() {
-
-    $('.chart').easyPieChart({
-        barColor: function(percent) {
-            percent /= 100;
-            return "rgb(" + Math.round(254 * (1 - percent)) + ", " + Math.round(255 * percent) + ", 0)";
-        },
-        animate: 1000,
-        scaleColor: '#ccc',
-        lineWidth: 3,
-        size: 100,
-        lineCap: 'cap',
-        onStep: function(value) {
-            this.$el.find('span').text(~~value);
-        }
-    });
-
-
-    $('.chart-home').easyPieChart({
-        barColor: 'rgba(255,255,255,0.5)',
-        trackColor: 'rgba(255,255,255,0.1)',
-        animate: 1000,
-        scaleColor: 'rgba(255,255,255,0.3)',
-        lineWidth: 3,
-        size: 100,
-        lineCap: 'cap',
-        onStep: function(value) {
-            this.$el.find('span').text(~~value);
-        }
-    });
-
-    $('.chart-alt').easyPieChart({
-        barColor: function(percent) {
-            percent /= 100;
-            return "rgb(" + Math.round(255 * (1 - percent)) + ", " + Math.round(255 * percent) + ", 0)";
-        },
-        trackColor: '#333',
-        scaleColor: false,
-        lineCap: 'butt',
-        rotate: -90,
-        lineWidth: 20,
-        animate: 1500,
-        onStep: function(value) {
-            this.$el.find('span').text(~~value);
-        }
-    });
-
-    $('.chart-alt-1').easyPieChart({
-        barColor: function(percent) {
-            percent /= 100;
-            return "rgb(" + Math.round(255 * (1 - percent)) + ", " + Math.round(255 * percent) + ", 0)";
-        },
-        trackColor: '#e1ecf1',
-        scaleColor: '#c4d7e0',
-        lineCap: 'cap',
-        rotate: -90,
-        lineWidth: 10,
-        size: 80,
-        animate: 2500,
-        onStep: function(value) {
-            this.$el.find('span').text(~~value);
-        }
-    });
-
-    $('.chart-alt-2').easyPieChart({
-        barColor: function(percent) {
-            percent /= 100;
-            return "rgb(" + Math.round(255 * (1 - percent)) + ", " + Math.round(255 * percent) + ", 0)";
-        },
-        trackColor: '#fff',
-        scaleColor: false,
-        lineCap: 'butt',
-        rotate: -90,
-        lineWidth: 4,
-        size: 50,
-        animate: 1500,
-        onStep: function(value) {
-            this.$el.find('span').text(~~value);
-        }
-    });
-
-    $('.chart-alt-3').easyPieChart({
-        barColor: function(percent) {
-            percent /= 100;
-            return "rgb(" + Math.round(255 * (1 - percent)) + ", " + Math.round(255 * percent) + ", 0)";
-        },
-        trackColor: '#333',
-        scaleColor: true,
-        lineCap: 'butt',
-        rotate: -90,
-        lineWidth: 4,
-        size: 50,
-        animate: 1500,
-        onStep: function(value) {
-            this.$el.find('span').text(~~value);
-        }
-    });
-
-    $('.chart-alt-10').easyPieChart({
-        barColor: 'rgba(255,255,255,255.4)',
-        trackColor: 'rgba(255,255,255,0.1)',
-        scaleColor: 'transparent',
-        lineCap: 'round',
-        rotate: -90,
-        lineWidth: 4,
-        size: 100,
-        animate: 2500,
-        onStep: function(value) {
-            this.$el.find('span').text(~~value);
-        }
-    });
-
-    $('.updateEasyPieChart').on('click', function(e) {
-        e.preventDefault();
-        $('.chart-home, .chart, .chart-alt, .chart-alt-1, .chart-alt-2, .chart-alt-3, .chart-alt-10').each(function() {
-            $(this).data('easyPieChart').update(Math.round(100 * Math.random()));
-        });
-    });
-};
-
-$(document).ready(function() {
-
-    initPieChart();
-
-});
-
-(function () {
-	'use strict';
-
-	var isCommonjs = typeof module !== 'undefined' && module.exports;
-	var keyboardAllowed = typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element;
-
-	var fn = (function () {
-		var val;
-		var valLength;
-
-		var fnMap = [
-			[
-				'requestFullscreen',
-				'exitFullscreen',
-				'fullscreenElement',
-				'fullscreenEnabled',
-				'fullscreenchange',
-				'fullscreenerror'
-			],
-			// new WebKit
-			[
-				'webkitRequestFullscreen',
-				'webkitExitFullscreen',
-				'webkitFullscreenElement',
-				'webkitFullscreenEnabled',
-				'webkitfullscreenchange',
-				'webkitfullscreenerror'
-
-			],
-			// old WebKit (Safari 5.1)
-			[
-				'webkitRequestFullScreen',
-				'webkitCancelFullScreen',
-				'webkitCurrentFullScreenElement',
-				'webkitCancelFullScreen',
-				'webkitfullscreenchange',
-				'webkitfullscreenerror'
-
-			],
-			[
-				'mozRequestFullScreen',
-				'mozCancelFullScreen',
-				'mozFullScreenElement',
-				'mozFullScreenEnabled',
-				'mozfullscreenchange',
-				'mozfullscreenerror'
-			],
-			[
-				'msRequestFullscreen',
-				'msExitFullscreen',
-				'msFullscreenElement',
-				'msFullscreenEnabled',
-				'MSFullscreenChange',
-				'MSFullscreenError'
-			]
-		];
-
-		var i = 0;
-		var l = fnMap.length;
-		var ret = {};
-
-		for (; i < l; i++) {
-			val = fnMap[i];
-			if (val && val[1] in document) {
-				for (i = 0, valLength = val.length; i < valLength; i++) {
-					ret[fnMap[0][i]] = val[i];
-				}
-				return ret;
-			}
-		}
-
-		return false;
-	})();
-
-	var screenfull = {
-		request: function (elem) {
-			var request = fn.requestFullscreen;
-
-			elem = elem || document.documentElement;
-
-			// Work around Safari 5.1 bug: reports support for
-			// keyboard in fullscreen even though it doesn't.
-			// Browser sniffing, since the alternative with
-			// setTimeout is even worse.
-			if (/5\.1[\.\d]* Safari/.test(navigator.userAgent)) {
-				elem[request]();
-			} else {
-				elem[request](keyboardAllowed && Element.ALLOW_KEYBOARD_INPUT);
-			}
-		},
-		exit: function () {
-			document[fn.exitFullscreen]();
-		},
-		toggle: function (elem) {
-			if (this.isFullscreen) {
-				this.exit();
-			} else {
-				this.request(elem);
-			}
-		},
-		raw: fn
-	};
-
-	if (!fn) {
-		if (isCommonjs) {
-			module.exports = false;
-		} else {
-			window.screenfull = false;
-		}
-
-		return;
-	}
-
-	Object.defineProperties(screenfull, {
-		isFullscreen: {
-			get: function () {
-				return Boolean(document[fn.fullscreenElement]);
-			}
-		},
-		element: {
-			enumerable: true,
-			get: function () {
-				return document[fn.fullscreenElement];
-			}
-		},
-		enabled: {
-			enumerable: true,
-			get: function () {
-				// Coerce to boolean in case of old WebKit
-				return Boolean(document[fn.fullscreenEnabled]);
-			}
-		}
-	});
-
-	if (isCommonjs) {
-		module.exports = screenfull;
-	} else {
-		window.screenfull = screenfull;
-	}
-})();
-
-$(document).ready(function(){
-
-    /* Box switch toggle */
-
-  $('.switch-button').click(function(ev){
-
-    ev.preventDefault();
-
-    var switchParent = $(this).attr('switch-parent');
-    var switchTarget = $(this).attr('switch-target');
-
-    $(switchParent).slideToggle();
-    $(switchTarget).slideToggle();
-
-  });
-
-    /* Content Box Show/Hide Buttons */
-
-  $('.hidden-button').hover(function(){
-
-    $(".btn-hide", this).fadeIn('fast');
-
-  },function(){
-
-    $(".btn-hide", this).fadeOut('normal');
-
-  });
-
-
-  /* Content Box Toggle */
-
-  $('.toggle-button').click(function(ev) {
-
-    ev.preventDefault();
-
-    $(".glyph-icon", this).toggleClass("icon-rotate-180");
-
-    $(this).parents(".content-box:first").find(".content-box-wrapper").slideToggle();
-
-  });
-
-  /* Content Box Remove */
-
-  $('.remove-button').click(function(ev){
-
-      ev.preventDefault();
-
-      var animationEFFECT = $(this).attr('data-animation');
-
-      var animationTARGET = $(this).parents(".content-box:first");
-
-      $(animationTARGET).addClass('animated');
-      $(animationTARGET).addClass(animationEFFECT);
-
-      var wait = window.setTimeout( function(){
-        $(animationTARGET).slideUp()},
-        500
-      );
-
-      /* Demo show removed content box */
-
-      var wait2 = window.setTimeout( function(){
-        $(animationTARGET).removeClass(animationEFFECT).fadeIn()},
-        2500
-      );
-
-  });
-
-  /* Close Info Boxes */
-
-  $(function() { "use strict";
-
-    $(".infobox-close").click(function(ev){
-
-      ev.preventDefault();
-
-      $(this).parent().fadeOut();
-
-    });
-
-
-  });
-
-});
-$(document).ready(function(){
-
-  /* Loader Show */
-
-  $('.overlay-button').click(function(){
-
-	var loadertheme = $(this).attr('data-theme');
-	var loaderopacity = $(this).attr('data-opacity');
-	var loaderstyle = $(this).attr('data-style');
-
-
-	var loader = '<div id="loader-overlay" class="ui-front loader ui-widget-overlay ' + loadertheme + ' opacity-' + loaderopacity + '"><img src="../../assets/images/spinner/loader-' + loaderstyle + '.gif" alt="" /></div>';
-
-    if ( $('#loader-overlay').length ) {
-	    $('#loader-overlay').remove();
+    for (var name in transEndEventNames) {
+      if (el.style[name] !== undefined) {
+        return { end: transEndEventNames[name] }
+      }
     }
-    $('body').append(loader);
-    $('#loader-overlay').fadeIn('fast');
 
-    //demo
+    return false // explicit for ie8 (  ._.)
+  }
 
-    setTimeout(function() {
-      $('#loader-overlay').fadeOut('fast');
-    }, 3000);
+  // http://blog.alexmaccaw.com/css-transitions
+  $.fn.emulateTransitionEnd = function (duration) {
+    var called = false
+    var $el = this
+    $(this).one('bsTransitionEnd', function () { called = true })
+    var callback = function () { if (!called) $($el).trigger($.support.transition.end) }
+    setTimeout(callback, duration)
+    return this
+  }
 
-  });
+  $(function () {
+    $.support.transition = transitionEnd()
 
-	/* Refresh Box */
+    if (!$.support.transition) return
 
-	$('.refresh-button').click(function(ev){
+    $.event.special.bsTransitionEnd = {
+      bindType: $.support.transition.end,
+      delegateType: $.support.transition.end,
+      handle: function (e) {
+        if ($(e.target).is(this)) return e.handleObj.handler.apply(this, arguments)
+      }
+    }
+  })
 
-		$('.glyph-icon', this).addClass('icon-spin');
+}(jQuery);
 
-	    ev.preventDefault();
+/* ========================================================================
+ * Bootstrap: alert.js v3.3.6
+ * http://getbootstrap.com/javascript/#alerts
+ * ========================================================================
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
 
-	    var refreshParent = $(this).parents('.content-box');
 
-		var loaderTheme = $(this).attr('data-theme');
-		var loaderOpacity = $(this).attr('data-opacity');
-		var loaderStyle = $(this).attr('data-style');
++function ($) {
+  'use strict';
+
+  // ALERT CLASS DEFINITION
+  // ======================
+
+  var dismiss = '[data-dismiss="alert"]'
+  var Alert   = function (el) {
+    $(el).on('click', dismiss, this.close)
+  }
+
+  Alert.VERSION = '3.3.6'
+
+  Alert.TRANSITION_DURATION = 150
+
+  Alert.prototype.close = function (e) {
+    var $this    = $(this)
+    var selector = $this.attr('data-target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+    }
+
+    var $parent = $(selector)
+
+    if (e) e.preventDefault()
+
+    if (!$parent.length) {
+      $parent = $this.closest('.alert')
+    }
+
+    $parent.trigger(e = $.Event('close.bs.alert'))
+
+    if (e.isDefaultPrevented()) return
+
+    $parent.removeClass('in')
+
+    function removeElement() {
+      // detach from parent, fire event then clean up data
+      $parent.detach().trigger('closed.bs.alert').remove()
+    }
+
+    $.support.transition && $parent.hasClass('fade') ?
+      $parent
+        .one('bsTransitionEnd', removeElement)
+        .emulateTransitionEnd(Alert.TRANSITION_DURATION) :
+      removeElement()
+  }
 
 
-		var loader = '<div id="refresh-overlay" class="ui-front loader ui-widget-overlay ' + loaderTheme + ' opacity-' + loaderOpacity + '"><img src="../../assets/images/spinner/loader-' + loaderStyle + '.gif" alt="" /></div>';
+  // ALERT PLUGIN DEFINITION
+  // =======================
 
-        if ( $('#refresh-overlay').length ) {
-            $('#refresh-overlay').remove();
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('bs.alert')
+
+      if (!data) $this.data('bs.alert', (data = new Alert(this)))
+      if (typeof option == 'string') data[option].call($this)
+    })
+  }
+
+  var old = $.fn.alert
+
+  $.fn.alert             = Plugin
+  $.fn.alert.Constructor = Alert
+
+
+  // ALERT NO CONFLICT
+  // =================
+
+  $.fn.alert.noConflict = function () {
+    $.fn.alert = old
+    return this
+  }
+
+
+  // ALERT DATA-API
+  // ==============
+
+  $(document).on('click.bs.alert.data-api', dismiss, Alert.prototype.close)
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: button.js v3.3.6
+ * http://getbootstrap.com/javascript/#buttons
+ * ========================================================================
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // BUTTON PUBLIC CLASS DEFINITION
+  // ==============================
+
+  var Button = function (element, options) {
+    this.$element  = $(element)
+    this.options   = $.extend({}, Button.DEFAULTS, options)
+    this.isLoading = false
+  }
+
+  Button.VERSION  = '3.3.6'
+
+  Button.DEFAULTS = {
+    loadingText: 'loading...'
+  }
+
+  Button.prototype.setState = function (state) {
+    var d    = 'disabled'
+    var $el  = this.$element
+    var val  = $el.is('input') ? 'val' : 'html'
+    var data = $el.data()
+
+    state += 'Text'
+
+    if (data.resetText == null) $el.data('resetText', $el[val]())
+
+    // push to event loop to allow forms to submit
+    setTimeout($.proxy(function () {
+      $el[val](data[state] == null ? this.options[state] : data[state])
+
+      if (state == 'loadingText') {
+        this.isLoading = true
+        $el.addClass(d).attr(d, d)
+      } else if (this.isLoading) {
+        this.isLoading = false
+        $el.removeClass(d).removeAttr(d)
+      }
+    }, this), 0)
+  }
+
+  Button.prototype.toggle = function () {
+    var changed = true
+    var $parent = this.$element.closest('[data-toggle="buttons"]')
+
+    if ($parent.length) {
+      var $input = this.$element.find('input')
+      if ($input.prop('type') == 'radio') {
+        if ($input.prop('checked')) changed = false
+        $parent.find('.active').removeClass('active')
+        this.$element.addClass('active')
+      } else if ($input.prop('type') == 'checkbox') {
+        if (($input.prop('checked')) !== this.$element.hasClass('active')) changed = false
+        this.$element.toggleClass('active')
+      }
+      $input.prop('checked', this.$element.hasClass('active'))
+      if (changed) $input.trigger('change')
+    } else {
+      this.$element.attr('aria-pressed', !this.$element.hasClass('active'))
+      this.$element.toggleClass('active')
+    }
+  }
+
+
+  // BUTTON PLUGIN DEFINITION
+  // ========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.button')
+      var options = typeof option == 'object' && option
+
+      if (!data) $this.data('bs.button', (data = new Button(this, options)))
+
+      if (option == 'toggle') data.toggle()
+      else if (option) data.setState(option)
+    })
+  }
+
+  var old = $.fn.button
+
+  $.fn.button             = Plugin
+  $.fn.button.Constructor = Button
+
+
+  // BUTTON NO CONFLICT
+  // ==================
+
+  $.fn.button.noConflict = function () {
+    $.fn.button = old
+    return this
+  }
+
+
+  // BUTTON DATA-API
+  // ===============
+
+  $(document)
+    .on('click.bs.button.data-api', '[data-toggle^="button"]', function (e) {
+      var $btn = $(e.target)
+      if (!$btn.hasClass('btn')) $btn = $btn.closest('.btn')
+      Plugin.call($btn, 'toggle')
+      if (!($(e.target).is('input[type="radio"]') || $(e.target).is('input[type="checkbox"]'))) e.preventDefault()
+    })
+    .on('focus.bs.button.data-api blur.bs.button.data-api', '[data-toggle^="button"]', function (e) {
+      $(e.target).closest('.btn').toggleClass('focus', /^focus(in)?$/.test(e.type))
+    })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: carousel.js v3.3.6
+ * http://getbootstrap.com/javascript/#carousel
+ * ========================================================================
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // CAROUSEL CLASS DEFINITION
+  // =========================
+
+  var Carousel = function (element, options) {
+    this.$element    = $(element)
+    this.$indicators = this.$element.find('.carousel-indicators')
+    this.options     = options
+    this.paused      = null
+    this.sliding     = null
+    this.interval    = null
+    this.$active     = null
+    this.$items      = null
+
+    this.options.keyboard && this.$element.on('keydown.bs.carousel', $.proxy(this.keydown, this))
+
+    this.options.pause == 'hover' && !('ontouchstart' in document.documentElement) && this.$element
+      .on('mouseenter.bs.carousel', $.proxy(this.pause, this))
+      .on('mouseleave.bs.carousel', $.proxy(this.cycle, this))
+  }
+
+  Carousel.VERSION  = '3.3.6'
+
+  Carousel.TRANSITION_DURATION = 600
+
+  Carousel.DEFAULTS = {
+    interval: 5000,
+    pause: 'hover',
+    wrap: true,
+    keyboard: true
+  }
+
+  Carousel.prototype.keydown = function (e) {
+    if (/input|textarea/i.test(e.target.tagName)) return
+    switch (e.which) {
+      case 37: this.prev(); break
+      case 39: this.next(); break
+      default: return
+    }
+
+    e.preventDefault()
+  }
+
+  Carousel.prototype.cycle = function (e) {
+    e || (this.paused = false)
+
+    this.interval && clearInterval(this.interval)
+
+    this.options.interval
+      && !this.paused
+      && (this.interval = setInterval($.proxy(this.next, this), this.options.interval))
+
+    return this
+  }
+
+  Carousel.prototype.getItemIndex = function (item) {
+    this.$items = item.parent().children('.item')
+    return this.$items.index(item || this.$active)
+  }
+
+  Carousel.prototype.getItemForDirection = function (direction, active) {
+    var activeIndex = this.getItemIndex(active)
+    var willWrap = (direction == 'prev' && activeIndex === 0)
+                || (direction == 'next' && activeIndex == (this.$items.length - 1))
+    if (willWrap && !this.options.wrap) return active
+    var delta = direction == 'prev' ? -1 : 1
+    var itemIndex = (activeIndex + delta) % this.$items.length
+    return this.$items.eq(itemIndex)
+  }
+
+  Carousel.prototype.to = function (pos) {
+    var that        = this
+    var activeIndex = this.getItemIndex(this.$active = this.$element.find('.item.active'))
+
+    if (pos > (this.$items.length - 1) || pos < 0) return
+
+    if (this.sliding)       return this.$element.one('slid.bs.carousel', function () { that.to(pos) }) // yes, "slid"
+    if (activeIndex == pos) return this.pause().cycle()
+
+    return this.slide(pos > activeIndex ? 'next' : 'prev', this.$items.eq(pos))
+  }
+
+  Carousel.prototype.pause = function (e) {
+    e || (this.paused = true)
+
+    if (this.$element.find('.next, .prev').length && $.support.transition) {
+      this.$element.trigger($.support.transition.end)
+      this.cycle(true)
+    }
+
+    this.interval = clearInterval(this.interval)
+
+    return this
+  }
+
+  Carousel.prototype.next = function () {
+    if (this.sliding) return
+    return this.slide('next')
+  }
+
+  Carousel.prototype.prev = function () {
+    if (this.sliding) return
+    return this.slide('prev')
+  }
+
+  Carousel.prototype.slide = function (type, next) {
+    var $active   = this.$element.find('.item.active')
+    var $next     = next || this.getItemForDirection(type, $active)
+    var isCycling = this.interval
+    var direction = type == 'next' ? 'left' : 'right'
+    var that      = this
+
+    if ($next.hasClass('active')) return (this.sliding = false)
+
+    var relatedTarget = $next[0]
+    var slideEvent = $.Event('slide.bs.carousel', {
+      relatedTarget: relatedTarget,
+      direction: direction
+    })
+    this.$element.trigger(slideEvent)
+    if (slideEvent.isDefaultPrevented()) return
+
+    this.sliding = true
+
+    isCycling && this.pause()
+
+    if (this.$indicators.length) {
+      this.$indicators.find('.active').removeClass('active')
+      var $nextIndicator = $(this.$indicators.children()[this.getItemIndex($next)])
+      $nextIndicator && $nextIndicator.addClass('active')
+    }
+
+    var slidEvent = $.Event('slid.bs.carousel', { relatedTarget: relatedTarget, direction: direction }) // yes, "slid"
+    if ($.support.transition && this.$element.hasClass('slide')) {
+      $next.addClass(type)
+      $next[0].offsetWidth // force reflow
+      $active.addClass(direction)
+      $next.addClass(direction)
+      $active
+        .one('bsTransitionEnd', function () {
+          $next.removeClass([type, direction].join(' ')).addClass('active')
+          $active.removeClass(['active', direction].join(' '))
+          that.sliding = false
+          setTimeout(function () {
+            that.$element.trigger(slidEvent)
+          }, 0)
+        })
+        .emulateTransitionEnd(Carousel.TRANSITION_DURATION)
+    } else {
+      $active.removeClass('active')
+      $next.addClass('active')
+      this.sliding = false
+      this.$element.trigger(slidEvent)
+    }
+
+    isCycling && this.cycle()
+
+    return this
+  }
+
+
+  // CAROUSEL PLUGIN DEFINITION
+  // ==========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.carousel')
+      var options = $.extend({}, Carousel.DEFAULTS, $this.data(), typeof option == 'object' && option)
+      var action  = typeof option == 'string' ? option : options.slide
+
+      if (!data) $this.data('bs.carousel', (data = new Carousel(this, options)))
+      if (typeof option == 'number') data.to(option)
+      else if (action) data[action]()
+      else if (options.interval) data.pause().cycle()
+    })
+  }
+
+  var old = $.fn.carousel
+
+  $.fn.carousel             = Plugin
+  $.fn.carousel.Constructor = Carousel
+
+
+  // CAROUSEL NO CONFLICT
+  // ====================
+
+  $.fn.carousel.noConflict = function () {
+    $.fn.carousel = old
+    return this
+  }
+
+
+  // CAROUSEL DATA-API
+  // =================
+
+  var clickHandler = function (e) {
+    var href
+    var $this   = $(this)
+    var $target = $($this.attr('data-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) // strip for ie7
+    if (!$target.hasClass('carousel')) return
+    var options = $.extend({}, $target.data(), $this.data())
+    var slideIndex = $this.attr('data-slide-to')
+    if (slideIndex) options.interval = false
+
+    Plugin.call($target, options)
+
+    if (slideIndex) {
+      $target.data('bs.carousel').to(slideIndex)
+    }
+
+    e.preventDefault()
+  }
+
+  $(document)
+    .on('click.bs.carousel.data-api', '[data-slide]', clickHandler)
+    .on('click.bs.carousel.data-api', '[data-slide-to]', clickHandler)
+
+  $(window).on('load', function () {
+    $('[data-ride="carousel"]').each(function () {
+      var $carousel = $(this)
+      Plugin.call($carousel, $carousel.data())
+    })
+  })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: collapse.js v3.3.6
+ * http://getbootstrap.com/javascript/#collapse
+ * ========================================================================
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // COLLAPSE PUBLIC CLASS DEFINITION
+  // ================================
+
+  var Collapse = function (element, options) {
+    this.$element      = $(element)
+    this.options       = $.extend({}, Collapse.DEFAULTS, options)
+    this.$trigger      = $('[data-toggle="collapse"][href="#' + element.id + '"],' +
+                           '[data-toggle="collapse"][data-target="#' + element.id + '"]')
+    this.transitioning = null
+
+    if (this.options.parent) {
+      this.$parent = this.getParent()
+    } else {
+      this.addAriaAndCollapsedClass(this.$element, this.$trigger)
+    }
+
+    if (this.options.toggle) this.toggle()
+  }
+
+  Collapse.VERSION  = '3.3.6'
+
+  Collapse.TRANSITION_DURATION = 350
+
+  Collapse.DEFAULTS = {
+    toggle: true
+  }
+
+  Collapse.prototype.dimension = function () {
+    var hasWidth = this.$element.hasClass('width')
+    return hasWidth ? 'width' : 'height'
+  }
+
+  Collapse.prototype.show = function () {
+    if (this.transitioning || this.$element.hasClass('in')) return
+
+    var activesData
+    var actives = this.$parent && this.$parent.children('.panel').children('.in, .collapsing')
+
+    if (actives && actives.length) {
+      activesData = actives.data('bs.collapse')
+      if (activesData && activesData.transitioning) return
+    }
+
+    var startEvent = $.Event('show.bs.collapse')
+    this.$element.trigger(startEvent)
+    if (startEvent.isDefaultPrevented()) return
+
+    if (actives && actives.length) {
+      Plugin.call(actives, 'hide')
+      activesData || actives.data('bs.collapse', null)
+    }
+
+    var dimension = this.dimension()
+
+    this.$element
+      .removeClass('collapse')
+      .addClass('collapsing')[dimension](0)
+      .attr('aria-expanded', true)
+
+    this.$trigger
+      .removeClass('collapsed')
+      .attr('aria-expanded', true)
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.$element
+        .removeClass('collapsing')
+        .addClass('collapse in')[dimension]('')
+      this.transitioning = 0
+      this.$element
+        .trigger('shown.bs.collapse')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    var scrollSize = $.camelCase(['scroll', dimension].join('-'))
+
+    this.$element
+      .one('bsTransitionEnd', $.proxy(complete, this))
+      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)[dimension](this.$element[0][scrollSize])
+  }
+
+  Collapse.prototype.hide = function () {
+    if (this.transitioning || !this.$element.hasClass('in')) return
+
+    var startEvent = $.Event('hide.bs.collapse')
+    this.$element.trigger(startEvent)
+    if (startEvent.isDefaultPrevented()) return
+
+    var dimension = this.dimension()
+
+    this.$element[dimension](this.$element[dimension]())[0].offsetHeight
+
+    this.$element
+      .addClass('collapsing')
+      .removeClass('collapse in')
+      .attr('aria-expanded', false)
+
+    this.$trigger
+      .addClass('collapsed')
+      .attr('aria-expanded', false)
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.transitioning = 0
+      this.$element
+        .removeClass('collapsing')
+        .addClass('collapse')
+        .trigger('hidden.bs.collapse')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    this.$element
+      [dimension](0)
+      .one('bsTransitionEnd', $.proxy(complete, this))
+      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)
+  }
+
+  Collapse.prototype.toggle = function () {
+    this[this.$element.hasClass('in') ? 'hide' : 'show']()
+  }
+
+  Collapse.prototype.getParent = function () {
+    return $(this.options.parent)
+      .find('[data-toggle="collapse"][data-parent="' + this.options.parent + '"]')
+      .each($.proxy(function (i, element) {
+        var $element = $(element)
+        this.addAriaAndCollapsedClass(getTargetFromTrigger($element), $element)
+      }, this))
+      .end()
+  }
+
+  Collapse.prototype.addAriaAndCollapsedClass = function ($element, $trigger) {
+    var isOpen = $element.hasClass('in')
+
+    $element.attr('aria-expanded', isOpen)
+    $trigger
+      .toggleClass('collapsed', !isOpen)
+      .attr('aria-expanded', isOpen)
+  }
+
+  function getTargetFromTrigger($trigger) {
+    var href
+    var target = $trigger.attr('data-target')
+      || (href = $trigger.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '') // strip for ie7
+
+    return $(target)
+  }
+
+
+  // COLLAPSE PLUGIN DEFINITION
+  // ==========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.collapse')
+      var options = $.extend({}, Collapse.DEFAULTS, $this.data(), typeof option == 'object' && option)
+
+      if (!data && options.toggle && /show|hide/.test(option)) options.toggle = false
+      if (!data) $this.data('bs.collapse', (data = new Collapse(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.collapse
+
+  $.fn.collapse             = Plugin
+  $.fn.collapse.Constructor = Collapse
+
+
+  // COLLAPSE NO CONFLICT
+  // ====================
+
+  $.fn.collapse.noConflict = function () {
+    $.fn.collapse = old
+    return this
+  }
+
+
+  // COLLAPSE DATA-API
+  // =================
+
+  $(document).on('click.bs.collapse.data-api', '[data-toggle="collapse"]', function (e) {
+    var $this   = $(this)
+
+    if (!$this.attr('data-target')) e.preventDefault()
+
+    var $target = getTargetFromTrigger($this)
+    var data    = $target.data('bs.collapse')
+    var option  = data ? 'toggle' : $this.data()
+
+    Plugin.call($target, option)
+  })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: dropdown.js v3.3.6
+ * http://getbootstrap.com/javascript/#dropdowns
+ * ========================================================================
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // DROPDOWN CLASS DEFINITION
+  // =========================
+
+  var backdrop = '.dropdown-backdrop'
+  var toggle   = '[data-toggle="dropdown"]'
+  var Dropdown = function (element) {
+    $(element).on('click.bs.dropdown', this.toggle)
+  }
+
+  Dropdown.VERSION = '3.3.6'
+
+  function getParent($this) {
+    var selector = $this.attr('data-target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && /#[A-Za-z]/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+    }
+
+    var $parent = selector && $(selector)
+
+    return $parent && $parent.length ? $parent : $this.parent()
+  }
+
+  function clearMenus(e) {
+    if (e && e.which === 3) return
+    $(backdrop).remove()
+    $(toggle).each(function () {
+      var $this         = $(this)
+      var $parent       = getParent($this)
+      var relatedTarget = { relatedTarget: this }
+
+      if (!$parent.hasClass('open')) return
+
+      if (e && e.type == 'click' && /input|textarea/i.test(e.target.tagName) && $.contains($parent[0], e.target)) return
+
+      $parent.trigger(e = $.Event('hide.bs.dropdown', relatedTarget))
+
+      if (e.isDefaultPrevented()) return
+
+      $this.attr('aria-expanded', 'false')
+      $parent.removeClass('open').trigger($.Event('hidden.bs.dropdown', relatedTarget))
+    })
+  }
+
+  Dropdown.prototype.toggle = function (e) {
+    var $this = $(this)
+
+    if ($this.is('.disabled, :disabled')) return
+
+    var $parent  = getParent($this)
+    var isActive = $parent.hasClass('open')
+
+    clearMenus()
+
+    if (!isActive) {
+      if ('ontouchstart' in document.documentElement && !$parent.closest('.navbar-nav').length) {
+        // if mobile we use a backdrop because click events don't delegate
+        $(document.createElement('div'))
+          .addClass('dropdown-backdrop')
+          .insertAfter($(this))
+          .on('click', clearMenus)
+      }
+
+      var relatedTarget = { relatedTarget: this }
+      $parent.trigger(e = $.Event('show.bs.dropdown', relatedTarget))
+
+      if (e.isDefaultPrevented()) return
+
+      $this
+        .trigger('focus')
+        .attr('aria-expanded', 'true')
+
+      $parent
+        .toggleClass('open')
+        .trigger($.Event('shown.bs.dropdown', relatedTarget))
+    }
+
+    return false
+  }
+
+  Dropdown.prototype.keydown = function (e) {
+    if (!/(38|40|27|32)/.test(e.which) || /input|textarea/i.test(e.target.tagName)) return
+
+    var $this = $(this)
+
+    e.preventDefault()
+    e.stopPropagation()
+
+    if ($this.is('.disabled, :disabled')) return
+
+    var $parent  = getParent($this)
+    var isActive = $parent.hasClass('open')
+
+    if (!isActive && e.which != 27 || isActive && e.which == 27) {
+      if (e.which == 27) $parent.find(toggle).trigger('focus')
+      return $this.trigger('click')
+    }
+
+    var desc = ' li:not(.disabled):visible a'
+    var $items = $parent.find('.dropdown-menu' + desc)
+
+    if (!$items.length) return
+
+    var index = $items.index(e.target)
+
+    if (e.which == 38 && index > 0)                 index--         // up
+    if (e.which == 40 && index < $items.length - 1) index++         // down
+    if (!~index)                                    index = 0
+
+    $items.eq(index).trigger('focus')
+  }
+
+
+  // DROPDOWN PLUGIN DEFINITION
+  // ==========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('bs.dropdown')
+
+      if (!data) $this.data('bs.dropdown', (data = new Dropdown(this)))
+      if (typeof option == 'string') data[option].call($this)
+    })
+  }
+
+  var old = $.fn.dropdown
+
+  $.fn.dropdown             = Plugin
+  $.fn.dropdown.Constructor = Dropdown
+
+
+  // DROPDOWN NO CONFLICT
+  // ====================
+
+  $.fn.dropdown.noConflict = function () {
+    $.fn.dropdown = old
+    return this
+  }
+
+
+  // APPLY TO STANDARD DROPDOWN ELEMENTS
+  // ===================================
+
+  $(document)
+    .on('click.bs.dropdown.data-api', clearMenus)
+    .on('click.bs.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
+    .on('click.bs.dropdown.data-api', toggle, Dropdown.prototype.toggle)
+    .on('keydown.bs.dropdown.data-api', toggle, Dropdown.prototype.keydown)
+    .on('keydown.bs.dropdown.data-api', '.dropdown-menu', Dropdown.prototype.keydown)
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: modal.js v3.3.6
+ * http://getbootstrap.com/javascript/#modals
+ * ========================================================================
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // MODAL CLASS DEFINITION
+  // ======================
+
+  var Modal = function (element, options) {
+    this.options             = options
+    this.$body               = $(document.body)
+    this.$element            = $(element)
+    this.$dialog             = this.$element.find('.modal-dialog')
+    this.$backdrop           = null
+    this.isShown             = null
+    this.originalBodyPad     = null
+    this.scrollbarWidth      = 0
+    this.ignoreBackdropClick = false
+
+    if (this.options.remote) {
+      this.$element
+        .find('.modal-content')
+        .load(this.options.remote, $.proxy(function () {
+          this.$element.trigger('loaded.bs.modal')
+        }, this))
+    }
+  }
+
+  Modal.VERSION  = '3.3.6'
+
+  Modal.TRANSITION_DURATION = 300
+  Modal.BACKDROP_TRANSITION_DURATION = 150
+
+  Modal.DEFAULTS = {
+    backdrop: true,
+    keyboard: true,
+    show: true
+  }
+
+  Modal.prototype.toggle = function (_relatedTarget) {
+    return this.isShown ? this.hide() : this.show(_relatedTarget)
+  }
+
+  Modal.prototype.show = function (_relatedTarget) {
+    var that = this
+    var e    = $.Event('show.bs.modal', { relatedTarget: _relatedTarget })
+
+    this.$element.trigger(e)
+
+    if (this.isShown || e.isDefaultPrevented()) return
+
+    this.isShown = true
+
+    this.checkScrollbar()
+    this.setScrollbar()
+    this.$body.addClass('modal-open')
+
+    this.escape()
+    this.resize()
+
+    this.$element.on('click.dismiss.bs.modal', '[data-dismiss="modal"]', $.proxy(this.hide, this))
+
+    this.$dialog.on('mousedown.dismiss.bs.modal', function () {
+      that.$element.one('mouseup.dismiss.bs.modal', function (e) {
+        if ($(e.target).is(that.$element)) that.ignoreBackdropClick = true
+      })
+    })
+
+    this.backdrop(function () {
+      var transition = $.support.transition && that.$element.hasClass('fade')
+
+      if (!that.$element.parent().length) {
+        that.$element.appendTo(that.$body) // don't move modals dom position
+      }
+
+      that.$element
+        .show()
+        .scrollTop(0)
+
+      that.adjustDialog()
+
+      if (transition) {
+        that.$element[0].offsetWidth // force reflow
+      }
+
+      that.$element.addClass('in')
+
+      that.enforceFocus()
+
+      var e = $.Event('shown.bs.modal', { relatedTarget: _relatedTarget })
+
+      transition ?
+        that.$dialog // wait for modal to slide in
+          .one('bsTransitionEnd', function () {
+            that.$element.trigger('focus').trigger(e)
+          })
+          .emulateTransitionEnd(Modal.TRANSITION_DURATION) :
+        that.$element.trigger('focus').trigger(e)
+    })
+  }
+
+  Modal.prototype.hide = function (e) {
+    if (e) e.preventDefault()
+
+    e = $.Event('hide.bs.modal')
+
+    this.$element.trigger(e)
+
+    if (!this.isShown || e.isDefaultPrevented()) return
+
+    this.isShown = false
+
+    this.escape()
+    this.resize()
+
+    $(document).off('focusin.bs.modal')
+
+    this.$element
+      .removeClass('in')
+      .off('click.dismiss.bs.modal')
+      .off('mouseup.dismiss.bs.modal')
+
+    this.$dialog.off('mousedown.dismiss.bs.modal')
+
+    $.support.transition && this.$element.hasClass('fade') ?
+      this.$element
+        .one('bsTransitionEnd', $.proxy(this.hideModal, this))
+        .emulateTransitionEnd(Modal.TRANSITION_DURATION) :
+      this.hideModal()
+  }
+
+  Modal.prototype.enforceFocus = function () {
+    $(document)
+      .off('focusin.bs.modal') // guard against infinite focus loop
+      .on('focusin.bs.modal', $.proxy(function (e) {
+        if (this.$element[0] !== e.target && !this.$element.has(e.target).length) {
+          this.$element.trigger('focus')
         }
-	    $(refreshParent).append(loader);
-	    $('#refresh-overlay').fadeIn('fast');
+      }, this))
+  }
 
-		//DEMO
+  Modal.prototype.escape = function () {
+    if (this.isShown && this.options.keyboard) {
+      this.$element.on('keydown.dismiss.bs.modal', $.proxy(function (e) {
+        e.which == 27 && this.hide()
+      }, this))
+    } else if (!this.isShown) {
+      this.$element.off('keydown.dismiss.bs.modal')
+    }
+  }
 
-        setTimeout(function() {
-            $('#refresh-overlay').fadeOut('fast');
-            $('.glyph-icon', this).removeClass('icon-spin');
-        }, 1500);
+  Modal.prototype.resize = function () {
+    if (this.isShown) {
+      $(window).on('resize.bs.modal', $.proxy(this.handleUpdate, this))
+    } else {
+      $(window).off('resize.bs.modal')
+    }
+  }
 
-	});
+  Modal.prototype.hideModal = function () {
+    var that = this
+    this.$element.hide()
+    this.backdrop(function () {
+      that.$body.removeClass('modal-open')
+      that.resetAdjustments()
+      that.resetScrollbar()
+      that.$element.trigger('hidden.bs.modal')
+    })
+  }
 
-});
+  Modal.prototype.removeBackdrop = function () {
+    this.$backdrop && this.$backdrop.remove()
+    this.$backdrop = null
+  }
+
+  Modal.prototype.backdrop = function (callback) {
+    var that = this
+    var animate = this.$element.hasClass('fade') ? 'fade' : ''
+
+    if (this.isShown && this.options.backdrop) {
+      var doAnimate = $.support.transition && animate
+
+      this.$backdrop = $(document.createElement('div'))
+        .addClass('modal-backdrop ' + animate)
+        .appendTo(this.$body)
+
+      this.$element.on('click.dismiss.bs.modal', $.proxy(function (e) {
+        if (this.ignoreBackdropClick) {
+          this.ignoreBackdropClick = false
+          return
+        }
+        if (e.target !== e.currentTarget) return
+        this.options.backdrop == 'static'
+          ? this.$element[0].focus()
+          : this.hide()
+      }, this))
+
+      if (doAnimate) this.$backdrop[0].offsetWidth // force reflow
+
+      this.$backdrop.addClass('in')
+
+      if (!callback) return
+
+      doAnimate ?
+        this.$backdrop
+          .one('bsTransitionEnd', callback)
+          .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
+        callback()
+
+    } else if (!this.isShown && this.$backdrop) {
+      this.$backdrop.removeClass('in')
+
+      var callbackRemove = function () {
+        that.removeBackdrop()
+        callback && callback()
+      }
+      $.support.transition && this.$element.hasClass('fade') ?
+        this.$backdrop
+          .one('bsTransitionEnd', callbackRemove)
+          .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
+        callbackRemove()
+
+    } else if (callback) {
+      callback()
+    }
+  }
+
+  // these following methods are used to handle overflowing modals
+
+  Modal.prototype.handleUpdate = function () {
+    this.adjustDialog()
+  }
+
+  Modal.prototype.adjustDialog = function () {
+    var modalIsOverflowing = this.$element[0].scrollHeight > document.documentElement.clientHeight
+
+    this.$element.css({
+      paddingLeft:  !this.bodyIsOverflowing && modalIsOverflowing ? this.scrollbarWidth : '',
+      paddingRight: this.bodyIsOverflowing && !modalIsOverflowing ? this.scrollbarWidth : ''
+    })
+  }
+
+  Modal.prototype.resetAdjustments = function () {
+    this.$element.css({
+      paddingLeft: '',
+      paddingRight: ''
+    })
+  }
+
+  Modal.prototype.checkScrollbar = function () {
+    var fullWindowWidth = window.innerWidth
+    if (!fullWindowWidth) { // workaround for missing window.innerWidth in IE8
+      var documentElementRect = document.documentElement.getBoundingClientRect()
+      fullWindowWidth = documentElementRect.right - Math.abs(documentElementRect.left)
+    }
+    this.bodyIsOverflowing = document.body.clientWidth < fullWindowWidth
+    this.scrollbarWidth = this.measureScrollbar()
+  }
+
+  Modal.prototype.setScrollbar = function () {
+    var bodyPad = parseInt((this.$body.css('padding-right') || 0), 10)
+    this.originalBodyPad = document.body.style.paddingRight || ''
+    if (this.bodyIsOverflowing) this.$body.css('padding-right', bodyPad + this.scrollbarWidth)
+  }
+
+  Modal.prototype.resetScrollbar = function () {
+    this.$body.css('padding-right', this.originalBodyPad)
+  }
+
+  Modal.prototype.measureScrollbar = function () { // thx walsh
+    var scrollDiv = document.createElement('div')
+    scrollDiv.className = 'modal-scrollbar-measure'
+    this.$body.append(scrollDiv)
+    var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth
+    this.$body[0].removeChild(scrollDiv)
+    return scrollbarWidth
+  }
+
+
+  // MODAL PLUGIN DEFINITION
+  // =======================
+
+  function Plugin(option, _relatedTarget) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.modal')
+      var options = $.extend({}, Modal.DEFAULTS, $this.data(), typeof option == 'object' && option)
+
+      if (!data) $this.data('bs.modal', (data = new Modal(this, options)))
+      if (typeof option == 'string') data[option](_relatedTarget)
+      else if (options.show) data.show(_relatedTarget)
+    })
+  }
+
+  var old = $.fn.modal
+
+  $.fn.modal             = Plugin
+  $.fn.modal.Constructor = Modal
+
+
+  // MODAL NO CONFLICT
+  // =================
+
+  $.fn.modal.noConflict = function () {
+    $.fn.modal = old
+    return this
+  }
+
+
+  // MODAL DATA-API
+  // ==============
+
+  $(document).on('click.bs.modal.data-api', '[data-toggle="modal"]', function (e) {
+    var $this   = $(this)
+    var href    = $this.attr('href')
+    var $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) // strip for ie7
+    var option  = $target.data('bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
+
+    if ($this.is('a')) e.preventDefault()
+
+    $target.one('show.bs.modal', function (showEvent) {
+      if (showEvent.isDefaultPrevented()) return // only register focus restorer if modal will actually get shown
+      $target.one('hidden.bs.modal', function () {
+        $this.is(':visible') && $this.trigger('focus')
+      })
+    })
+    Plugin.call($target, option, this)
+  })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: tooltip.js v3.3.6
+ * http://getbootstrap.com/javascript/#tooltip
+ * Inspired by the original jQuery.tipsy by Jason Frame
+ * ========================================================================
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // TOOLTIP PUBLIC CLASS DEFINITION
+  // ===============================
+
+  var Tooltip = function (element, options) {
+    this.type       = null
+    this.options    = null
+    this.enabled    = null
+    this.timeout    = null
+    this.hoverState = null
+    this.$element   = null
+    this.inState    = null
+
+    this.init('tooltip', element, options)
+  }
+
+  Tooltip.VERSION  = '3.3.6'
+
+  Tooltip.TRANSITION_DURATION = 150
+
+  Tooltip.DEFAULTS = {
+    animation: true,
+    placement: 'top',
+    selector: false,
+    template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+    trigger: 'hover focus',
+    title: '',
+    delay: 0,
+    html: false,
+    container: false,
+    viewport: {
+      selector: 'body',
+      padding: 0
+    }
+  }
+
+  Tooltip.prototype.init = function (type, element, options) {
+    this.enabled   = true
+    this.type      = type
+    this.$element  = $(element)
+    this.options   = this.getOptions(options)
+    this.$viewport = this.options.viewport && $($.isFunction(this.options.viewport) ? this.options.viewport.call(this, this.$element) : (this.options.viewport.selector || this.options.viewport))
+    this.inState   = { click: false, hover: false, focus: false }
+
+    if (this.$element[0] instanceof document.constructor && !this.options.selector) {
+      throw new Error('`selector` option must be specified when initializing ' + this.type + ' on the window.document object!')
+    }
+
+    var triggers = this.options.trigger.split(' ')
+
+    for (var i = triggers.length; i--;) {
+      var trigger = triggers[i]
+
+      if (trigger == 'click') {
+        this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.toggle, this))
+      } else if (trigger != 'manual') {
+        var eventIn  = trigger == 'hover' ? 'mouseenter' : 'focusin'
+        var eventOut = trigger == 'hover' ? 'mouseleave' : 'focusout'
+
+        this.$element.on(eventIn  + '.' + this.type, this.options.selector, $.proxy(this.enter, this))
+        this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.leave, this))
+      }
+    }
+
+    this.options.selector ?
+      (this._options = $.extend({}, this.options, { trigger: 'manual', selector: '' })) :
+      this.fixTitle()
+  }
+
+  Tooltip.prototype.getDefaults = function () {
+    return Tooltip.DEFAULTS
+  }
+
+  Tooltip.prototype.getOptions = function (options) {
+    options = $.extend({}, this.getDefaults(), this.$element.data(), options)
+
+    if (options.delay && typeof options.delay == 'number') {
+      options.delay = {
+        show: options.delay,
+        hide: options.delay
+      }
+    }
+
+    return options
+  }
+
+  Tooltip.prototype.getDelegateOptions = function () {
+    var options  = {}
+    var defaults = this.getDefaults()
+
+    this._options && $.each(this._options, function (key, value) {
+      if (defaults[key] != value) options[key] = value
+    })
+
+    return options
+  }
+
+  Tooltip.prototype.enter = function (obj) {
+    var self = obj instanceof this.constructor ?
+      obj : $(obj.currentTarget).data('bs.' + this.type)
+
+    if (!self) {
+      self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
+      $(obj.currentTarget).data('bs.' + this.type, self)
+    }
+
+    if (obj instanceof $.Event) {
+      self.inState[obj.type == 'focusin' ? 'focus' : 'hover'] = true
+    }
+
+    if (self.tip().hasClass('in') || self.hoverState == 'in') {
+      self.hoverState = 'in'
+      return
+    }
+
+    clearTimeout(self.timeout)
+
+    self.hoverState = 'in'
+
+    if (!self.options.delay || !self.options.delay.show) return self.show()
+
+    self.timeout = setTimeout(function () {
+      if (self.hoverState == 'in') self.show()
+    }, self.options.delay.show)
+  }
+
+  Tooltip.prototype.isInStateTrue = function () {
+    for (var key in this.inState) {
+      if (this.inState[key]) return true
+    }
+
+    return false
+  }
+
+  Tooltip.prototype.leave = function (obj) {
+    var self = obj instanceof this.constructor ?
+      obj : $(obj.currentTarget).data('bs.' + this.type)
+
+    if (!self) {
+      self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
+      $(obj.currentTarget).data('bs.' + this.type, self)
+    }
+
+    if (obj instanceof $.Event) {
+      self.inState[obj.type == 'focusout' ? 'focus' : 'hover'] = false
+    }
+
+    if (self.isInStateTrue()) return
+
+    clearTimeout(self.timeout)
+
+    self.hoverState = 'out'
+
+    if (!self.options.delay || !self.options.delay.hide) return self.hide()
+
+    self.timeout = setTimeout(function () {
+      if (self.hoverState == 'out') self.hide()
+    }, self.options.delay.hide)
+  }
+
+  Tooltip.prototype.show = function () {
+    var e = $.Event('show.bs.' + this.type)
+
+    if (this.hasContent() && this.enabled) {
+      this.$element.trigger(e)
+
+      var inDom = $.contains(this.$element[0].ownerDocument.documentElement, this.$element[0])
+      if (e.isDefaultPrevented() || !inDom) return
+      var that = this
+
+      var $tip = this.tip()
+
+      var tipId = this.getUID(this.type)
+
+      this.setContent()
+      $tip.attr('id', tipId)
+      this.$element.attr('aria-describedby', tipId)
+
+      if (this.options.animation) $tip.addClass('fade')
+
+      var placement = typeof this.options.placement == 'function' ?
+        this.options.placement.call(this, $tip[0], this.$element[0]) :
+        this.options.placement
+
+      var autoToken = /\s?auto?\s?/i
+      var autoPlace = autoToken.test(placement)
+      if (autoPlace) placement = placement.replace(autoToken, '') || 'top'
+
+      $tip
+        .detach()
+        .css({ top: 0, left: 0, display: 'block' })
+        .addClass(placement)
+        .data('bs.' + this.type, this)
+
+      this.options.container ? $tip.appendTo(this.options.container) : $tip.insertAfter(this.$element)
+      this.$element.trigger('inserted.bs.' + this.type)
+
+      var pos          = this.getPosition()
+      var actualWidth  = $tip[0].offsetWidth
+      var actualHeight = $tip[0].offsetHeight
+
+      if (autoPlace) {
+        var orgPlacement = placement
+        var viewportDim = this.getPosition(this.$viewport)
+
+        placement = placement == 'bottom' && pos.bottom + actualHeight > viewportDim.bottom ? 'top'    :
+                    placement == 'top'    && pos.top    - actualHeight < viewportDim.top    ? 'bottom' :
+                    placement == 'right'  && pos.right  + actualWidth  > viewportDim.width  ? 'left'   :
+                    placement == 'left'   && pos.left   - actualWidth  < viewportDim.left   ? 'right'  :
+                    placement
+
+        $tip
+          .removeClass(orgPlacement)
+          .addClass(placement)
+      }
+
+      var calculatedOffset = this.getCalculatedOffset(placement, pos, actualWidth, actualHeight)
+
+      this.applyPlacement(calculatedOffset, placement)
+
+      var complete = function () {
+        var prevHoverState = that.hoverState
+        that.$element.trigger('shown.bs.' + that.type)
+        that.hoverState = null
+
+        if (prevHoverState == 'out') that.leave(that)
+      }
+
+      $.support.transition && this.$tip.hasClass('fade') ?
+        $tip
+          .one('bsTransitionEnd', complete)
+          .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
+        complete()
+    }
+  }
+
+  Tooltip.prototype.applyPlacement = function (offset, placement) {
+    var $tip   = this.tip()
+    var width  = $tip[0].offsetWidth
+    var height = $tip[0].offsetHeight
+
+    // manually read margins because getBoundingClientRect includes difference
+    var marginTop = parseInt($tip.css('margin-top'), 10)
+    var marginLeft = parseInt($tip.css('margin-left'), 10)
+
+    // we must check for NaN for ie 8/9
+    if (isNaN(marginTop))  marginTop  = 0
+    if (isNaN(marginLeft)) marginLeft = 0
+
+    offset.top  += marginTop
+    offset.left += marginLeft
+
+    // $.fn.offset doesn't round pixel values
+    // so we use setOffset directly with our own function B-0
+    $.offset.setOffset($tip[0], $.extend({
+      using: function (props) {
+        $tip.css({
+          top: Math.round(props.top),
+          left: Math.round(props.left)
+        })
+      }
+    }, offset), 0)
+
+    $tip.addClass('in')
+
+    // check to see if placing tip in new offset caused the tip to resize itself
+    var actualWidth  = $tip[0].offsetWidth
+    var actualHeight = $tip[0].offsetHeight
+
+    if (placement == 'top' && actualHeight != height) {
+      offset.top = offset.top + height - actualHeight
+    }
+
+    var delta = this.getViewportAdjustedDelta(placement, offset, actualWidth, actualHeight)
+
+    if (delta.left) offset.left += delta.left
+    else offset.top += delta.top
+
+    var isVertical          = /top|bottom/.test(placement)
+    var arrowDelta          = isVertical ? delta.left * 2 - width + actualWidth : delta.top * 2 - height + actualHeight
+    var arrowOffsetPosition = isVertical ? 'offsetWidth' : 'offsetHeight'
+
+    $tip.offset(offset)
+    this.replaceArrow(arrowDelta, $tip[0][arrowOffsetPosition], isVertical)
+  }
+
+  Tooltip.prototype.replaceArrow = function (delta, dimension, isVertical) {
+    this.arrow()
+      .css(isVertical ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
+      .css(isVertical ? 'top' : 'left', '')
+  }
+
+  Tooltip.prototype.setContent = function () {
+    var $tip  = this.tip()
+    var title = this.getTitle()
+
+    $tip.find('.tooltip-inner')[this.options.html ? 'html' : 'text'](title)
+    $tip.removeClass('fade in top bottom left right')
+  }
+
+  Tooltip.prototype.hide = function (callback) {
+    var that = this
+    var $tip = $(this.$tip)
+    var e    = $.Event('hide.bs.' + this.type)
+
+    function complete() {
+      if (that.hoverState != 'in') $tip.detach()
+      that.$element
+        .removeAttr('aria-describedby')
+        .trigger('hidden.bs.' + that.type)
+      callback && callback()
+    }
+
+    this.$element.trigger(e)
+
+    if (e.isDefaultPrevented()) return
+
+    $tip.removeClass('in')
+
+    $.support.transition && $tip.hasClass('fade') ?
+      $tip
+        .one('bsTransitionEnd', complete)
+        .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
+      complete()
+
+    this.hoverState = null
+
+    return this
+  }
+
+  Tooltip.prototype.fixTitle = function () {
+    var $e = this.$element
+    if ($e.attr('title') || typeof $e.attr('data-original-title') != 'string') {
+      $e.attr('data-original-title', $e.attr('title') || '').attr('title', '')
+    }
+  }
+
+  Tooltip.prototype.hasContent = function () {
+    return this.getTitle()
+  }
+
+  Tooltip.prototype.getPosition = function ($element) {
+    $element   = $element || this.$element
+
+    var el     = $element[0]
+    var isBody = el.tagName == 'BODY'
+
+    var elRect    = el.getBoundingClientRect()
+    if (elRect.width == null) {
+      // width and height are missing in IE8, so compute them manually; see https://github.com/twbs/bootstrap/issues/14093
+      elRect = $.extend({}, elRect, { width: elRect.right - elRect.left, height: elRect.bottom - elRect.top })
+    }
+    var elOffset  = isBody ? { top: 0, left: 0 } : $element.offset()
+    var scroll    = { scroll: isBody ? document.documentElement.scrollTop || document.body.scrollTop : $element.scrollTop() }
+    var outerDims = isBody ? { width: $(window).width(), height: $(window).height() } : null
+
+    return $.extend({}, elRect, scroll, outerDims, elOffset)
+  }
+
+  Tooltip.prototype.getCalculatedOffset = function (placement, pos, actualWidth, actualHeight) {
+    return placement == 'bottom' ? { top: pos.top + pos.height,   left: pos.left + pos.width / 2 - actualWidth / 2 } :
+           placement == 'top'    ? { top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2 } :
+           placement == 'left'   ? { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth } :
+        /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width }
+
+  }
+
+  Tooltip.prototype.getViewportAdjustedDelta = function (placement, pos, actualWidth, actualHeight) {
+    var delta = { top: 0, left: 0 }
+    if (!this.$viewport) return delta
+
+    var viewportPadding = this.options.viewport && this.options.viewport.padding || 0
+    var viewportDimensions = this.getPosition(this.$viewport)
+
+    if (/right|left/.test(placement)) {
+      var topEdgeOffset    = pos.top - viewportPadding - viewportDimensions.scroll
+      var bottomEdgeOffset = pos.top + viewportPadding - viewportDimensions.scroll + actualHeight
+      if (topEdgeOffset < viewportDimensions.top) { // top overflow
+        delta.top = viewportDimensions.top - topEdgeOffset
+      } else if (bottomEdgeOffset > viewportDimensions.top + viewportDimensions.height) { // bottom overflow
+        delta.top = viewportDimensions.top + viewportDimensions.height - bottomEdgeOffset
+      }
+    } else {
+      var leftEdgeOffset  = pos.left - viewportPadding
+      var rightEdgeOffset = pos.left + viewportPadding + actualWidth
+      if (leftEdgeOffset < viewportDimensions.left) { // left overflow
+        delta.left = viewportDimensions.left - leftEdgeOffset
+      } else if (rightEdgeOffset > viewportDimensions.right) { // right overflow
+        delta.left = viewportDimensions.left + viewportDimensions.width - rightEdgeOffset
+      }
+    }
+
+    return delta
+  }
+
+  Tooltip.prototype.getTitle = function () {
+    var title
+    var $e = this.$element
+    var o  = this.options
+
+    title = $e.attr('data-original-title')
+      || (typeof o.title == 'function' ? o.title.call($e[0]) :  o.title)
+
+    return title
+  }
+
+  Tooltip.prototype.getUID = function (prefix) {
+    do prefix += ~~(Math.random() * 1000000)
+    while (document.getElementById(prefix))
+    return prefix
+  }
+
+  Tooltip.prototype.tip = function () {
+    if (!this.$tip) {
+      this.$tip = $(this.options.template)
+      if (this.$tip.length != 1) {
+        throw new Error(this.type + ' `template` option must consist of exactly 1 top-level element!')
+      }
+    }
+    return this.$tip
+  }
+
+  Tooltip.prototype.arrow = function () {
+    return (this.$arrow = this.$arrow || this.tip().find('.tooltip-arrow'))
+  }
+
+  Tooltip.prototype.enable = function () {
+    this.enabled = true
+  }
+
+  Tooltip.prototype.disable = function () {
+    this.enabled = false
+  }
+
+  Tooltip.prototype.toggleEnabled = function () {
+    this.enabled = !this.enabled
+  }
+
+  Tooltip.prototype.toggle = function (e) {
+    var self = this
+    if (e) {
+      self = $(e.currentTarget).data('bs.' + this.type)
+      if (!self) {
+        self = new this.constructor(e.currentTarget, this.getDelegateOptions())
+        $(e.currentTarget).data('bs.' + this.type, self)
+      }
+    }
+
+    if (e) {
+      self.inState.click = !self.inState.click
+      if (self.isInStateTrue()) self.enter(self)
+      else self.leave(self)
+    } else {
+      self.tip().hasClass('in') ? self.leave(self) : self.enter(self)
+    }
+  }
+
+  Tooltip.prototype.destroy = function () {
+    var that = this
+    clearTimeout(this.timeout)
+    this.hide(function () {
+      that.$element.off('.' + that.type).removeData('bs.' + that.type)
+      if (that.$tip) {
+        that.$tip.detach()
+      }
+      that.$tip = null
+      that.$arrow = null
+      that.$viewport = null
+    })
+  }
+
+
+  // TOOLTIP PLUGIN DEFINITION
+  // =========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.tooltip')
+      var options = typeof option == 'object' && option
+
+      if (!data && /destroy|hide/.test(option)) return
+      if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.tooltip
+
+  $.fn.tooltip             = Plugin
+  $.fn.tooltip.Constructor = Tooltip
+
+
+  // TOOLTIP NO CONFLICT
+  // ===================
+
+  $.fn.tooltip.noConflict = function () {
+    $.fn.tooltip = old
+    return this
+  }
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: popover.js v3.3.6
+ * http://getbootstrap.com/javascript/#popovers
+ * ========================================================================
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // POPOVER PUBLIC CLASS DEFINITION
+  // ===============================
+
+  var Popover = function (element, options) {
+    this.init('popover', element, options)
+  }
+
+  if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js')
+
+  Popover.VERSION  = '3.3.6'
+
+  Popover.DEFAULTS = $.extend({}, $.fn.tooltip.Constructor.DEFAULTS, {
+    placement: 'right',
+    trigger: 'click',
+    content: '',
+    template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'
+  })
+
+
+  // NOTE: POPOVER EXTENDS tooltip.js
+  // ================================
+
+  Popover.prototype = $.extend({}, $.fn.tooltip.Constructor.prototype)
+
+  Popover.prototype.constructor = Popover
+
+  Popover.prototype.getDefaults = function () {
+    return Popover.DEFAULTS
+  }
+
+  Popover.prototype.setContent = function () {
+    var $tip    = this.tip()
+    var title   = this.getTitle()
+    var content = this.getContent()
+
+    $tip.find('.popover-title')[this.options.html ? 'html' : 'text'](title)
+    $tip.find('.popover-content').children().detach().end()[ // we use append for html objects to maintain js events
+      this.options.html ? (typeof content == 'string' ? 'html' : 'append') : 'text'
+    ](content)
+
+    $tip.removeClass('fade top bottom left right in')
+
+    // IE8 doesn't accept hiding via the `:empty` pseudo selector, we have to do
+    // this manually by checking the contents.
+    if (!$tip.find('.popover-title').html()) $tip.find('.popover-title').hide()
+  }
+
+  Popover.prototype.hasContent = function () {
+    return this.getTitle() || this.getContent()
+  }
+
+  Popover.prototype.getContent = function () {
+    var $e = this.$element
+    var o  = this.options
+
+    return $e.attr('data-content')
+      || (typeof o.content == 'function' ?
+            o.content.call($e[0]) :
+            o.content)
+  }
+
+  Popover.prototype.arrow = function () {
+    return (this.$arrow = this.$arrow || this.tip().find('.arrow'))
+  }
+
+
+  // POPOVER PLUGIN DEFINITION
+  // =========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.popover')
+      var options = typeof option == 'object' && option
+
+      if (!data && /destroy|hide/.test(option)) return
+      if (!data) $this.data('bs.popover', (data = new Popover(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.popover
+
+  $.fn.popover             = Plugin
+  $.fn.popover.Constructor = Popover
+
+
+  // POPOVER NO CONFLICT
+  // ===================
+
+  $.fn.popover.noConflict = function () {
+    $.fn.popover = old
+    return this
+  }
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: scrollspy.js v3.3.6
+ * http://getbootstrap.com/javascript/#scrollspy
+ * ========================================================================
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // SCROLLSPY CLASS DEFINITION
+  // ==========================
+
+  function ScrollSpy(element, options) {
+    this.$body          = $(document.body)
+    this.$scrollElement = $(element).is(document.body) ? $(window) : $(element)
+    this.options        = $.extend({}, ScrollSpy.DEFAULTS, options)
+    this.selector       = (this.options.target || '') + ' .nav li > a'
+    this.offsets        = []
+    this.targets        = []
+    this.activeTarget   = null
+    this.scrollHeight   = 0
+
+    this.$scrollElement.on('scroll.bs.scrollspy', $.proxy(this.process, this))
+    this.refresh()
+    this.process()
+  }
+
+  ScrollSpy.VERSION  = '3.3.6'
+
+  ScrollSpy.DEFAULTS = {
+    offset: 10
+  }
+
+  ScrollSpy.prototype.getScrollHeight = function () {
+    return this.$scrollElement[0].scrollHeight || Math.max(this.$body[0].scrollHeight, document.documentElement.scrollHeight)
+  }
+
+  ScrollSpy.prototype.refresh = function () {
+    var that          = this
+    var offsetMethod  = 'offset'
+    var offsetBase    = 0
+
+    this.offsets      = []
+    this.targets      = []
+    this.scrollHeight = this.getScrollHeight()
+
+    if (!$.isWindow(this.$scrollElement[0])) {
+      offsetMethod = 'position'
+      offsetBase   = this.$scrollElement.scrollTop()
+    }
+
+    this.$body
+      .find(this.selector)
+      .map(function () {
+        var $el   = $(this)
+        var href  = $el.data('target') || $el.attr('href')
+        var $href = /^#./.test(href) && $(href)
+
+        return ($href
+          && $href.length
+          && $href.is(':visible')
+          && [[$href[offsetMethod]().top + offsetBase, href]]) || null
+      })
+      .sort(function (a, b) { return a[0] - b[0] })
+      .each(function () {
+        that.offsets.push(this[0])
+        that.targets.push(this[1])
+      })
+  }
+
+  ScrollSpy.prototype.process = function () {
+    var scrollTop    = this.$scrollElement.scrollTop() + this.options.offset
+    var scrollHeight = this.getScrollHeight()
+    var maxScroll    = this.options.offset + scrollHeight - this.$scrollElement.height()
+    var offsets      = this.offsets
+    var targets      = this.targets
+    var activeTarget = this.activeTarget
+    var i
+
+    if (this.scrollHeight != scrollHeight) {
+      this.refresh()
+    }
+
+    if (scrollTop >= maxScroll) {
+      return activeTarget != (i = targets[targets.length - 1]) && this.activate(i)
+    }
+
+    if (activeTarget && scrollTop < offsets[0]) {
+      this.activeTarget = null
+      return this.clear()
+    }
+
+    for (i = offsets.length; i--;) {
+      activeTarget != targets[i]
+        && scrollTop >= offsets[i]
+        && (offsets[i + 1] === undefined || scrollTop < offsets[i + 1])
+        && this.activate(targets[i])
+    }
+  }
+
+  ScrollSpy.prototype.activate = function (target) {
+    this.activeTarget = target
+
+    this.clear()
+
+    var selector = this.selector +
+      '[data-target="' + target + '"],' +
+      this.selector + '[href="' + target + '"]'
+
+    var active = $(selector)
+      .parents('li')
+      .addClass('active')
+
+    if (active.parent('.dropdown-menu').length) {
+      active = active
+        .closest('li.dropdown')
+        .addClass('active')
+    }
+
+    active.trigger('activate.bs.scrollspy')
+  }
+
+  ScrollSpy.prototype.clear = function () {
+    $(this.selector)
+      .parentsUntil(this.options.target, '.active')
+      .removeClass('active')
+  }
+
+
+  // SCROLLSPY PLUGIN DEFINITION
+  // ===========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.scrollspy')
+      var options = typeof option == 'object' && option
+
+      if (!data) $this.data('bs.scrollspy', (data = new ScrollSpy(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.scrollspy
+
+  $.fn.scrollspy             = Plugin
+  $.fn.scrollspy.Constructor = ScrollSpy
+
+
+  // SCROLLSPY NO CONFLICT
+  // =====================
+
+  $.fn.scrollspy.noConflict = function () {
+    $.fn.scrollspy = old
+    return this
+  }
+
+
+  // SCROLLSPY DATA-API
+  // ==================
+
+  $(window).on('load.bs.scrollspy.data-api', function () {
+    $('[data-spy="scroll"]').each(function () {
+      var $spy = $(this)
+      Plugin.call($spy, $spy.data())
+    })
+  })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: tab.js v3.3.6
+ * http://getbootstrap.com/javascript/#tabs
+ * ========================================================================
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // TAB CLASS DEFINITION
+  // ====================
+
+  var Tab = function (element) {
+    // jscs:disable requireDollarBeforejQueryAssignment
+    this.element = $(element)
+    // jscs:enable requireDollarBeforejQueryAssignment
+  }
+
+  Tab.VERSION = '3.3.6'
+
+  Tab.TRANSITION_DURATION = 150
+
+  Tab.prototype.show = function () {
+    var $this    = this.element
+    var $ul      = $this.closest('ul:not(.dropdown-menu)')
+    var selector = $this.data('target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+    }
+
+    if ($this.parent('li').hasClass('active')) return
+
+    var $previous = $ul.find('.active:last a')
+    var hideEvent = $.Event('hide.bs.tab', {
+      relatedTarget: $this[0]
+    })
+    var showEvent = $.Event('show.bs.tab', {
+      relatedTarget: $previous[0]
+    })
+
+    $previous.trigger(hideEvent)
+    $this.trigger(showEvent)
+
+    if (showEvent.isDefaultPrevented() || hideEvent.isDefaultPrevented()) return
+
+    var $target = $(selector)
+
+    this.activate($this.closest('li'), $ul)
+    this.activate($target, $target.parent(), function () {
+      $previous.trigger({
+        type: 'hidden.bs.tab',
+        relatedTarget: $this[0]
+      })
+      $this.trigger({
+        type: 'shown.bs.tab',
+        relatedTarget: $previous[0]
+      })
+    })
+  }
+
+  Tab.prototype.activate = function (element, container, callback) {
+    var $active    = container.find('> .active')
+    var transition = callback
+      && $.support.transition
+      && ($active.length && $active.hasClass('fade') || !!container.find('> .fade').length)
+
+    function next() {
+      $active
+        .removeClass('active')
+        .find('> .dropdown-menu > .active')
+          .removeClass('active')
+        .end()
+        .find('[data-toggle="tab"]')
+          .attr('aria-expanded', false)
+
+      element
+        .addClass('active')
+        .find('[data-toggle="tab"]')
+          .attr('aria-expanded', true)
+
+      if (transition) {
+        element[0].offsetWidth // reflow for transition
+        element.addClass('in')
+      } else {
+        element.removeClass('fade')
+      }
+
+      if (element.parent('.dropdown-menu').length) {
+        element
+          .closest('li.dropdown')
+            .addClass('active')
+          .end()
+          .find('[data-toggle="tab"]')
+            .attr('aria-expanded', true)
+      }
+
+      callback && callback()
+    }
+
+    $active.length && transition ?
+      $active
+        .one('bsTransitionEnd', next)
+        .emulateTransitionEnd(Tab.TRANSITION_DURATION) :
+      next()
+
+    $active.removeClass('in')
+  }
+
+
+  // TAB PLUGIN DEFINITION
+  // =====================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('bs.tab')
+
+      if (!data) $this.data('bs.tab', (data = new Tab(this)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.tab
+
+  $.fn.tab             = Plugin
+  $.fn.tab.Constructor = Tab
+
+
+  // TAB NO CONFLICT
+  // ===============
+
+  $.fn.tab.noConflict = function () {
+    $.fn.tab = old
+    return this
+  }
+
+
+  // TAB DATA-API
+  // ============
+
+  var clickHandler = function (e) {
+    e.preventDefault()
+    Plugin.call($(this), 'show')
+  }
+
+  $(document)
+    .on('click.bs.tab.data-api', '[data-toggle="tab"]', clickHandler)
+    .on('click.bs.tab.data-api', '[data-toggle="pill"]', clickHandler)
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: affix.js v3.3.6
+ * http://getbootstrap.com/javascript/#affix
+ * ========================================================================
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // AFFIX CLASS DEFINITION
+  // ======================
+
+  var Affix = function (element, options) {
+    this.options = $.extend({}, Affix.DEFAULTS, options)
+
+    this.$target = $(this.options.target)
+      .on('scroll.bs.affix.data-api', $.proxy(this.checkPosition, this))
+      .on('click.bs.affix.data-api',  $.proxy(this.checkPositionWithEventLoop, this))
+
+    this.$element     = $(element)
+    this.affixed      = null
+    this.unpin        = null
+    this.pinnedOffset = null
+
+    this.checkPosition()
+  }
+
+  Affix.VERSION  = '3.3.6'
+
+  Affix.RESET    = 'affix affix-top affix-bottom'
+
+  Affix.DEFAULTS = {
+    offset: 0,
+    target: window
+  }
+
+  Affix.prototype.getState = function (scrollHeight, height, offsetTop, offsetBottom) {
+    var scrollTop    = this.$target.scrollTop()
+    var position     = this.$element.offset()
+    var targetHeight = this.$target.height()
+
+    if (offsetTop != null && this.affixed == 'top') return scrollTop < offsetTop ? 'top' : false
+
+    if (this.affixed == 'bottom') {
+      if (offsetTop != null) return (scrollTop + this.unpin <= position.top) ? false : 'bottom'
+      return (scrollTop + targetHeight <= scrollHeight - offsetBottom) ? false : 'bottom'
+    }
+
+    var initializing   = this.affixed == null
+    var colliderTop    = initializing ? scrollTop : position.top
+    var colliderHeight = initializing ? targetHeight : height
+
+    if (offsetTop != null && scrollTop <= offsetTop) return 'top'
+    if (offsetBottom != null && (colliderTop + colliderHeight >= scrollHeight - offsetBottom)) return 'bottom'
+
+    return false
+  }
+
+  Affix.prototype.getPinnedOffset = function () {
+    if (this.pinnedOffset) return this.pinnedOffset
+    this.$element.removeClass(Affix.RESET).addClass('affix')
+    var scrollTop = this.$target.scrollTop()
+    var position  = this.$element.offset()
+    return (this.pinnedOffset = position.top - scrollTop)
+  }
+
+  Affix.prototype.checkPositionWithEventLoop = function () {
+    setTimeout($.proxy(this.checkPosition, this), 1)
+  }
+
+  Affix.prototype.checkPosition = function () {
+    if (!this.$element.is(':visible')) return
+
+    var height       = this.$element.height()
+    var offset       = this.options.offset
+    var offsetTop    = offset.top
+    var offsetBottom = offset.bottom
+    var scrollHeight = Math.max($(document).height(), $(document.body).height())
+
+    if (typeof offset != 'object')         offsetBottom = offsetTop = offset
+    if (typeof offsetTop == 'function')    offsetTop    = offset.top(this.$element)
+    if (typeof offsetBottom == 'function') offsetBottom = offset.bottom(this.$element)
+
+    var affix = this.getState(scrollHeight, height, offsetTop, offsetBottom)
+
+    if (this.affixed != affix) {
+      if (this.unpin != null) this.$element.css('top', '')
+
+      var affixType = 'affix' + (affix ? '-' + affix : '')
+      var e         = $.Event(affixType + '.bs.affix')
+
+      this.$element.trigger(e)
+
+      if (e.isDefaultPrevented()) return
+
+      this.affixed = affix
+      this.unpin = affix == 'bottom' ? this.getPinnedOffset() : null
+
+      this.$element
+        .removeClass(Affix.RESET)
+        .addClass(affixType)
+        .trigger(affixType.replace('affix', 'affixed') + '.bs.affix')
+    }
+
+    if (affix == 'bottom') {
+      this.$element.offset({
+        top: scrollHeight - height - offsetBottom
+      })
+    }
+  }
+
+
+  // AFFIX PLUGIN DEFINITION
+  // =======================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.affix')
+      var options = typeof option == 'object' && option
+
+      if (!data) $this.data('bs.affix', (data = new Affix(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.affix
+
+  $.fn.affix             = Plugin
+  $.fn.affix.Constructor = Affix
+
+
+  // AFFIX NO CONFLICT
+  // =================
+
+  $.fn.affix.noConflict = function () {
+    $.fn.affix = old
+    return this
+  }
+
+
+  // AFFIX DATA-API
+  // ==============
+
+  $(window).on('load', function () {
+    $('[data-spy="affix"]').each(function () {
+      var $spy = $(this)
+      var data = $spy.data()
+
+      data.offset = data.offset || {}
+
+      if (data.offsetBottom != null) data.offset.bottom = data.offsetBottom
+      if (data.offsetTop    != null) data.offset.top    = data.offsetTop
+
+      Plugin.call($spy, data)
+    })
+  })
+
+}(jQuery);
+
 /* Prevent default on # hrefs */
 
 $(function() { "use strict";
@@ -14210,6 +14825,582 @@ $(document).on('ready', function() {
 $(window).on('resize', function() {
     swither_resizer();
 });
+/*!
+ * jQuery UI Accordion @VERSION
+ * http://jqueryui.com
+ *
+ * Copyright 2014 jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * http://api.jqueryui.com/accordion/
+ */
+(function( factory ) {
+    if ( typeof define === "function" && define.amd ) {
+
+        // AMD. Register as an anonymous module.
+        define([
+            "jquery",
+            "./core",
+            "./widget"
+        ], factory );
+    } else {
+
+        // Browser globals
+        factory( jQuery );
+    }
+}(function( $ ) {
+
+    return $.widget( "ui.accordion", {
+        version: "@VERSION",
+        options: {
+            active: 0,
+            animate: {},
+            collapsible: false,
+            event: "click",
+            header: "> li > :first-child,> :not(li):even",
+            heightStyle: "auto",
+            icons: {
+                activeHeader: "ui-icon-triangle-1-s",
+                header: "ui-icon-triangle-1-e"
+            },
+
+            // callbacks
+            activate: null,
+            beforeActivate: null
+        },
+
+        hideProps: {
+            borderTopWidth: "hide",
+            borderBottomWidth: "hide",
+            paddingTop: "hide",
+            paddingBottom: "hide",
+            height: "hide"
+        },
+
+        showProps: {
+            borderTopWidth: "show",
+            borderBottomWidth: "show",
+            paddingTop: "show",
+            paddingBottom: "show",
+            height: "show"
+        },
+
+        _create: function() {
+            var options = this.options;
+            this.prevShow = this.prevHide = $();
+            this.element.addClass( "ui-accordion ui-widget ui-helper-reset" )
+                // ARIA
+                .attr( "role", "tablist" );
+
+            // don't allow collapsible: false and active: false / null
+            if ( !options.collapsible && (options.active === false || options.active == null) ) {
+                options.active = 0;
+            }
+
+            this._processPanels();
+            // handle negative values
+            if ( options.active < 0 ) {
+                options.active += this.headers.length;
+            }
+            this._refresh();
+        },
+
+        _getCreateEventData: function() {
+            return {
+                header: this.active,
+                panel: !this.active.length ? $() : this.active.next()
+            };
+        },
+
+        _createIcons: function() {
+            var icons = this.options.icons;
+            if ( icons ) {
+                $( "<span>" )
+                    .addClass( "ui-accordion-header-icon ui-icon " + icons.header )
+                    .prependTo( this.headers );
+                this.active.children( ".ui-accordion-header-icon" )
+                    .removeClass( icons.header )
+                    .addClass( icons.activeHeader );
+                this.headers.addClass( "ui-accordion-icons" );
+            }
+        },
+
+        _destroyIcons: function() {
+            this.headers
+                .removeClass( "ui-accordion-icons" )
+                .children( ".ui-accordion-header-icon" )
+                .remove();
+        },
+
+        _destroy: function() {
+            var contents;
+
+            // clean up main element
+            this.element
+                .removeClass( "ui-accordion ui-widget ui-helper-reset" )
+                .removeAttr( "role" );
+
+            // clean up headers
+            this.headers
+                .removeClass( "ui-accordion-header ui-accordion-header-active ui-state-default " +
+                "ui-corner-all ui-state-active ui-state-disabled ui-corner-top" )
+                .removeAttr( "role" )
+                .removeAttr( "aria-expanded" )
+                .removeAttr( "aria-selected" )
+                .removeAttr( "aria-controls" )
+                .removeAttr( "tabIndex" )
+                .removeUniqueId();
+
+            this._destroyIcons();
+
+            // clean up content panels
+            contents = this.headers.next()
+                .removeClass( "ui-helper-reset ui-widget-content ui-corner-bottom " +
+                "ui-accordion-content ui-accordion-content-active ui-state-disabled" )
+                .css( "display", "" )
+                .removeAttr( "role" )
+                .removeAttr( "aria-hidden" )
+                .removeAttr( "aria-labelledby" )
+                .removeUniqueId();
+
+            if ( this.options.heightStyle !== "content" ) {
+                contents.css( "height", "" );
+            }
+        },
+
+        _setOption: function( key, value ) {
+            if ( key === "active" ) {
+                // _activate() will handle invalid values and update this.options
+                this._activate( value );
+                return;
+            }
+
+            if ( key === "event" ) {
+                if ( this.options.event ) {
+                    this._off( this.headers, this.options.event );
+                }
+                this._setupEvents( value );
+            }
+
+            this._super( key, value );
+
+            // setting collapsible: false while collapsed; open first panel
+            if ( key === "collapsible" && !value && this.options.active === false ) {
+                this._activate( 0 );
+            }
+
+            if ( key === "icons" ) {
+                this._destroyIcons();
+                if ( value ) {
+                    this._createIcons();
+                }
+            }
+
+            // #5332 - opacity doesn't cascade to positioned elements in IE
+            // so we need to add the disabled class to the headers and panels
+            if ( key === "disabled" ) {
+                this.element
+                    .toggleClass( "ui-state-disabled", !!value )
+                    .attr( "aria-disabled", value );
+                this.headers.add( this.headers.next() )
+                    .toggleClass( "ui-state-disabled", !!value );
+            }
+        },
+
+        _keydown: function( event ) {
+            if ( event.altKey || event.ctrlKey ) {
+                return;
+            }
+
+            var keyCode = $.ui.keyCode,
+                length = this.headers.length,
+                currentIndex = this.headers.index( event.target ),
+                toFocus = false;
+
+            switch ( event.keyCode ) {
+                case keyCode.RIGHT:
+                case keyCode.DOWN:
+                    toFocus = this.headers[ ( currentIndex + 1 ) % length ];
+                    break;
+                case keyCode.LEFT:
+                case keyCode.UP:
+                    toFocus = this.headers[ ( currentIndex - 1 + length ) % length ];
+                    break;
+                case keyCode.SPACE:
+                case keyCode.ENTER:
+                    this._eventHandler( event );
+                    break;
+                case keyCode.HOME:
+                    toFocus = this.headers[ 0 ];
+                    break;
+                case keyCode.END:
+                    toFocus = this.headers[ length - 1 ];
+                    break;
+            }
+
+            if ( toFocus ) {
+                $( event.target ).attr( "tabIndex", -1 );
+                $( toFocus ).attr( "tabIndex", 0 );
+                toFocus.focus();
+                event.preventDefault();
+            }
+        },
+
+        _panelKeyDown: function( event ) {
+            if ( event.keyCode === $.ui.keyCode.UP && event.ctrlKey ) {
+                $( event.currentTarget ).prev().focus();
+            }
+        },
+
+        refresh: function() {
+            var options = this.options;
+            this._processPanels();
+
+            // was collapsed or no panel
+            if ( ( options.active === false && options.collapsible === true ) || !this.headers.length ) {
+                options.active = false;
+                this.active = $();
+                // active false only when collapsible is true
+            } else if ( options.active === false ) {
+                this._activate( 0 );
+                // was active, but active panel is gone
+            } else if ( this.active.length && !$.contains( this.element[ 0 ], this.active[ 0 ] ) ) {
+                // all remaining panel are disabled
+                if ( this.headers.length === this.headers.find(".ui-state-disabled").length ) {
+                    options.active = false;
+                    this.active = $();
+                    // activate previous panel
+                } else {
+                    this._activate( Math.max( 0, options.active - 1 ) );
+                }
+                // was active, active panel still exists
+            } else {
+                // make sure active index is correct
+                options.active = this.headers.index( this.active );
+            }
+
+            this._destroyIcons();
+
+            this._refresh();
+        },
+
+        _processPanels: function() {
+            this.headers = this.element.find( this.options.header )
+                .addClass( "ui-accordion-header ui-state-default ui-corner-all" );
+
+            this.headers.next()
+                .addClass( "ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" )
+                .filter( ":not(.ui-accordion-content-active)" )
+                .hide();
+        },
+
+        _refresh: function() {
+            var maxHeight,
+                options = this.options,
+                heightStyle = options.heightStyle,
+                parent = this.element.parent();
+
+            this.active = this._findActive( options.active )
+                .addClass( "ui-accordion-header-active ui-state-active ui-corner-top" )
+                .removeClass( "ui-corner-all" );
+            this.active.next()
+                .addClass( "ui-accordion-content-active" )
+                .show();
+
+            this.headers
+                .attr( "role", "tab" )
+                .each(function() {
+                    var header = $( this ),
+                        headerId = header.uniqueId().attr( "id" ),
+                        panel = header.next(),
+                        panelId = panel.uniqueId().attr( "id" );
+                    header.attr( "aria-controls", panelId );
+                    panel.attr( "aria-labelledby", headerId );
+                })
+                .next()
+                .attr( "role", "tabpanel" );
+
+            this.headers
+                .not( this.active )
+                .attr({
+                    "aria-selected": "false",
+                    "aria-expanded": "false",
+                    tabIndex: -1
+                })
+                .next()
+                .attr({
+                    "aria-hidden": "true"
+                })
+                .hide();
+
+            // make sure at least one header is in the tab order
+            if ( !this.active.length ) {
+                this.headers.eq( 0 ).attr( "tabIndex", 0 );
+            } else {
+                this.active.attr({
+                    "aria-selected": "true",
+                    "aria-expanded": "true",
+                    tabIndex: 0
+                })
+                    .next()
+                    .attr({
+                        "aria-hidden": "false"
+                    });
+            }
+
+            this._createIcons();
+
+            this._setupEvents( options.event );
+
+            if ( heightStyle === "fill" ) {
+                maxHeight = parent.height();
+                this.element.siblings( ":visible" ).each(function() {
+                    var elem = $( this ),
+                        position = elem.css( "position" );
+
+                    if ( position === "absolute" || position === "fixed" ) {
+                        return;
+                    }
+                    maxHeight -= elem.outerHeight( true );
+                });
+
+                this.headers.each(function() {
+                    maxHeight -= $( this ).outerHeight( true );
+                });
+
+                this.headers.next()
+                    .each(function() {
+                        $( this ).height( Math.max( 0, maxHeight -
+                        $( this ).innerHeight() + $( this ).height() ) );
+                    })
+                    .css( "overflow", "auto" );
+            } else if ( heightStyle === "auto" ) {
+                maxHeight = 0;
+                this.headers.next()
+                    .each(function() {
+                        maxHeight = Math.max( maxHeight, $( this ).css( "height", "" ).height() );
+                    })
+                    .height( maxHeight );
+            }
+        },
+
+        _activate: function( index ) {
+            var active = this._findActive( index )[ 0 ];
+
+            // trying to activate the already active panel
+            if ( active === this.active[ 0 ] ) {
+                return;
+            }
+
+            // trying to collapse, simulate a click on the currently active header
+            active = active || this.active[ 0 ];
+
+            this._eventHandler({
+                target: active,
+                currentTarget: active,
+                preventDefault: $.noop
+            });
+        },
+
+        _findActive: function( selector ) {
+            return typeof selector === "number" ? this.headers.eq( selector ) : $();
+        },
+
+        _setupEvents: function( event ) {
+            var events = {
+                keydown: "_keydown"
+            };
+            if ( event ) {
+                $.each( event.split( " " ), function( index, eventName ) {
+                    events[ eventName ] = "_eventHandler";
+                });
+            }
+
+            this._off( this.headers.add( this.headers.next() ) );
+            this._on( this.headers, events );
+            this._on( this.headers.next(), { keydown: "_panelKeyDown" });
+            this._hoverable( this.headers );
+            this._focusable( this.headers );
+        },
+
+        _eventHandler: function( event ) {
+            var options = this.options,
+                active = this.active,
+                clicked = $( event.currentTarget ),
+                clickedIsActive = clicked[ 0 ] === active[ 0 ],
+                collapsing = clickedIsActive && options.collapsible,
+                toShow = collapsing ? $() : clicked.next(),
+                toHide = active.next(),
+                eventData = {
+                    oldHeader: active,
+                    oldPanel: toHide,
+                    newHeader: collapsing ? $() : clicked,
+                    newPanel: toShow
+                };
+
+            event.preventDefault();
+
+            if (
+                // click on active header, but not collapsible
+            ( clickedIsActive && !options.collapsible ) ||
+                // allow canceling activation
+            ( this._trigger( "beforeActivate", event, eventData ) === false ) ) {
+                return;
+            }
+
+            options.active = collapsing ? false : this.headers.index( clicked );
+
+            // when the call to ._toggle() comes after the class changes
+            // it causes a very odd bug in IE 8 (see #6720)
+            this.active = clickedIsActive ? $() : clicked;
+            this._toggle( eventData );
+
+            // switch classes
+            // corner classes on the previously active header stay after the animation
+            active.removeClass( "ui-accordion-header-active ui-state-active" );
+            if ( options.icons ) {
+                active.children( ".ui-accordion-header-icon" )
+                    .removeClass( options.icons.activeHeader )
+                    .addClass( options.icons.header );
+            }
+
+            if ( !clickedIsActive ) {
+                clicked
+                    .removeClass( "ui-corner-all" )
+                    .addClass( "ui-accordion-header-active ui-state-active ui-corner-top" );
+                if ( options.icons ) {
+                    clicked.children( ".ui-accordion-header-icon" )
+                        .removeClass( options.icons.header )
+                        .addClass( options.icons.activeHeader );
+                }
+
+                clicked
+                    .next()
+                    .addClass( "ui-accordion-content-active" );
+            }
+        },
+
+        _toggle: function( data ) {
+            var toShow = data.newPanel,
+                toHide = this.prevShow.length ? this.prevShow : data.oldPanel;
+
+            // handle activating a panel during the animation for another activation
+            this.prevShow.add( this.prevHide ).stop( true, true );
+            this.prevShow = toShow;
+            this.prevHide = toHide;
+
+            if ( this.options.animate ) {
+                this._animate( toShow, toHide, data );
+            } else {
+                toHide.hide();
+                toShow.show();
+                this._toggleComplete( data );
+            }
+
+            toHide.attr({
+                "aria-hidden": "true"
+            });
+            toHide.prev().attr( "aria-selected", "false" );
+            // if we're switching panels, remove the old header from the tab order
+            // if we're opening from collapsed state, remove the previous header from the tab order
+            // if we're collapsing, then keep the collapsing header in the tab order
+            if ( toShow.length && toHide.length ) {
+                toHide.prev().attr({
+                    "tabIndex": -1,
+                    "aria-expanded": "false"
+                });
+            } else if ( toShow.length ) {
+                this.headers.filter(function() {
+                    return $( this ).attr( "tabIndex" ) === 0;
+                })
+                    .attr( "tabIndex", -1 );
+            }
+
+            toShow
+                .attr( "aria-hidden", "false" )
+                .prev()
+                .attr({
+                    "aria-selected": "true",
+                    tabIndex: 0,
+                    "aria-expanded": "true"
+                });
+        },
+
+        _animate: function( toShow, toHide, data ) {
+            var total, easing, duration,
+                that = this,
+                adjust = 0,
+                down = toShow.length &&
+                    ( !toHide.length || ( toShow.index() < toHide.index() ) ),
+                animate = this.options.animate || {},
+                options = down && animate.down || animate,
+                complete = function() {
+                    that._toggleComplete( data );
+                };
+
+            if ( typeof options === "number" ) {
+                duration = options;
+            }
+            if ( typeof options === "string" ) {
+                easing = options;
+            }
+            // fall back from options to animation in case of partial down settings
+            easing = easing || options.easing || animate.easing;
+            duration = duration || options.duration || animate.duration;
+
+            if ( !toHide.length ) {
+                return toShow.animate( this.showProps, duration, easing, complete );
+            }
+            if ( !toShow.length ) {
+                return toHide.animate( this.hideProps, duration, easing, complete );
+            }
+
+            total = toShow.show().outerHeight();
+            toHide.animate( this.hideProps, {
+                duration: duration,
+                easing: easing,
+                step: function( now, fx ) {
+                    fx.now = Math.round( now );
+                }
+            });
+            toShow
+                .hide()
+                .animate( this.showProps, {
+                    duration: duration,
+                    easing: easing,
+                    complete: complete,
+                    step: function( now, fx ) {
+                        fx.now = Math.round( now );
+                        if ( fx.prop !== "height" ) {
+                            adjust += fx.now;
+                        } else if ( that.options.heightStyle !== "content" ) {
+                            fx.now = Math.round( total - toHide.outerHeight() - adjust );
+                            adjust = 0;
+                        }
+                    }
+                });
+        },
+
+        _toggleComplete: function( data ) {
+            var toHide = data.oldPanel;
+
+            toHide
+                .removeClass( "ui-accordion-content-active" )
+                .prev()
+                .removeClass( "ui-corner-top" )
+                .addClass( "ui-corner-all" );
+
+            // Work around for rendering bug in IE (#5421)
+            if ( toHide.length ) {
+                toHide.parent()[ 0 ].className = toHide.parent()[ 0 ].className;
+            }
+            this._trigger( "activate", null, data );
+        }
+    });
+
+}));
+
 /**
  *
  * jquery.sparkline.js
@@ -22606,5 +23797,1754 @@ $(function() {
     }
 
     update();
+
+});
+// Generated by CoffeeScript 1.6.2
+/*
+ Easy pie chart is a jquery plugin to display simple animated pie charts for only one value
+
+ Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
+ and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
+
+ Built on top of the jQuery library (http://jquery.com)
+
+ @source: http://github.com/rendro/easy-pie-chart/
+ @autor: Robert Fleischmann
+ @version: 1.2.1
+
+ Inspired by: http://dribbble.com/shots/631074-Simple-Pie-Charts-II?list=popular&offset=210
+ Thanks to Philip Thrasher for the jquery plugin boilerplate for coffee script
+ */
+(function($) {
+    $.easyPieChart = function(el, options) {
+        var addScaleLine, animateLine, drawLine, easeInOutQuad, rAF, renderBackground, renderScale, renderTrack,
+            _this = this;
+
+        this.el = el;
+        this.$el = $(el);
+        this.$el.data("easyPieChart", this);
+        this.init = function() {
+            var percent, scaleBy;
+
+            _this.options = $.extend({}, $.easyPieChart.defaultOptions, options);
+            percent = parseInt(_this.$el.data('percent'), 10);
+            _this.percentage = 0;
+            _this.canvas = $("<canvas width='" + _this.options.size + "' height='" + _this.options.size + "'></canvas>").get(0);
+            _this.$el.append(_this.canvas);
+            if (typeof G_vmlCanvasManager !== "undefined" && G_vmlCanvasManager !== null) {
+                G_vmlCanvasManager.initElement(_this.canvas);
+            }
+            _this.ctx = _this.canvas.getContext('2d');
+            if (window.devicePixelRatio > 1) {
+                scaleBy = window.devicePixelRatio;
+                $(_this.canvas).css({
+                    width: _this.options.size,
+                    height: _this.options.size
+                });
+                _this.canvas.width *= scaleBy;
+                _this.canvas.height *= scaleBy;
+                _this.ctx.scale(scaleBy, scaleBy);
+            }
+            _this.ctx.translate(_this.options.size / 2, _this.options.size / 2);
+            _this.ctx.rotate(_this.options.rotate * Math.PI / 180);
+            _this.$el.addClass('easyPieChart');
+            _this.$el.css({
+                width: _this.options.size,
+                height: _this.options.size,
+                lineHeight: "" + _this.options.size + "px"
+            });
+            _this.update(percent);
+            return _this;
+        };
+        this.update = function(percent) {
+            percent = parseFloat(percent) || 0;
+            if (_this.options.animate === false) {
+                drawLine(percent);
+            } else {
+                animateLine(_this.percentage, percent);
+            }
+            return _this;
+        };
+        renderScale = function() {
+            var i, _i, _results;
+
+            _this.ctx.fillStyle = _this.options.scaleColor;
+            _this.ctx.lineWidth = 1;
+            _results = [];
+            for (i = _i = 0; _i <= 24; i = ++_i) {
+                _results.push(addScaleLine(i));
+            }
+            return _results;
+        };
+        addScaleLine = function(i) {
+            var offset;
+
+            offset = i % 6 === 0 ? 0 : _this.options.size * 0.017;
+            _this.ctx.save();
+            _this.ctx.rotate(i * Math.PI / 12);
+            _this.ctx.fillRect(_this.options.size / 2 - offset, 0, -_this.options.size * 0.05 + offset, 1);
+            _this.ctx.restore();
+        };
+        renderTrack = function() {
+            var offset;
+
+            offset = _this.options.size / 2 - _this.options.lineWidth / 2;
+            if (_this.options.scaleColor !== false) {
+                offset -= _this.options.size * 0.08;
+            }
+            _this.ctx.beginPath();
+            _this.ctx.arc(0, 0, offset, 0, Math.PI * 2, true);
+            _this.ctx.closePath();
+            _this.ctx.strokeStyle = _this.options.trackColor;
+            _this.ctx.lineWidth = _this.options.lineWidth;
+            _this.ctx.stroke();
+        };
+        renderBackground = function() {
+            if (_this.options.scaleColor !== false) {
+                renderScale();
+            }
+            if (_this.options.trackColor !== false) {
+                renderTrack();
+            }
+        };
+        drawLine = function(percent) {
+            var offset;
+
+            renderBackground();
+            _this.ctx.strokeStyle = $.isFunction(_this.options.barColor) ? _this.options.barColor(percent) : _this.options.barColor;
+            _this.ctx.lineCap = _this.options.lineCap;
+            _this.ctx.lineWidth = _this.options.lineWidth;
+            offset = _this.options.size / 2 - _this.options.lineWidth / 2;
+            if (_this.options.scaleColor !== false) {
+                offset -= _this.options.size * 0.08;
+            }
+            _this.ctx.save();
+            _this.ctx.rotate(-Math.PI / 2);
+            _this.ctx.beginPath();
+            _this.ctx.arc(0, 0, offset, 0, Math.PI * 2 * percent / 100, false);
+            _this.ctx.stroke();
+            _this.ctx.restore();
+        };
+        rAF = (function() {
+            return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function(callback) {
+                return window.setTimeout(callback, 1000 / 60);
+            };
+        })();
+        animateLine = function(from, to) {
+            var anim, startTime;
+
+            _this.options.onStart.call(_this);
+            _this.percentage = to;
+            startTime = Date.now();
+            anim = function() {
+                var currentValue, process;
+
+                process = Date.now() - startTime;
+                if (process < _this.options.animate) {
+                    rAF(anim);
+                }
+                _this.ctx.clearRect(-_this.options.size / 2, -_this.options.size / 2, _this.options.size, _this.options.size);
+                renderBackground.call(_this);
+                currentValue = [easeInOutQuad(process, from, to - from, _this.options.animate)];
+                _this.options.onStep.call(_this, currentValue);
+                drawLine.call(_this, currentValue);
+                if (process >= _this.options.animate) {
+                    return _this.options.onStop.call(_this);
+                }
+            };
+            rAF(anim);
+        };
+        easeInOutQuad = function(t, b, c, d) {
+            var easeIn, easing;
+
+            easeIn = function(t) {
+                return Math.pow(t, 2);
+            };
+            easing = function(t) {
+                if (t < 1) {
+                    return easeIn(t);
+                } else {
+                    return 2 - easeIn((t / 2) * -2 + 2);
+                }
+            };
+            t /= d / 2;
+            return c / 2 * easing(t) + b;
+        };
+        return this.init();
+    };
+    $.easyPieChart.defaultOptions = {
+        barColor: '#ef1e25',
+        trackColor: '#f2f2f2',
+        scaleColor: '#dfe0e0',
+        lineCap: 'round',
+        rotate: 0,
+        size: 110,
+        lineWidth: 3,
+        animate: false,
+        onStart: $.noop,
+        onStop: $.noop,
+        onStep: $.noop
+    };
+    $.fn.easyPieChart = function(options) {
+        return $.each(this, function(i, el) {
+            var $el, instanceOptions;
+
+            $el = $(el);
+            if (!$el.data('easyPieChart')) {
+                instanceOptions = $.extend({}, options, $el.data());
+                return $el.data('easyPieChart', new $.easyPieChart(el, instanceOptions));
+            }
+        });
+    };
+    return void 0;
+})(jQuery);
+/* Pie gauges */
+
+var initPieChart = function() {
+
+    $('.chart').easyPieChart({
+        barColor: function(percent) {
+            percent /= 100;
+            return "rgb(" + Math.round(254 * (1 - percent)) + ", " + Math.round(255 * percent) + ", 0)";
+        },
+        animate: 1000,
+        scaleColor: '#ccc',
+        lineWidth: 3,
+        size: 100,
+        lineCap: 'cap',
+        onStep: function(value) {
+            this.$el.find('span').text(~~value);
+        }
+    });
+
+
+    $('.chart-home').easyPieChart({
+        barColor: 'rgba(255,255,255,0.5)',
+        trackColor: 'rgba(255,255,255,0.1)',
+        animate: 1000,
+        scaleColor: 'rgba(255,255,255,0.3)',
+        lineWidth: 3,
+        size: 100,
+        lineCap: 'cap',
+        onStep: function(value) {
+            this.$el.find('span').text(~~value);
+        }
+    });
+
+    $('.chart-alt').easyPieChart({
+        barColor: function(percent) {
+            percent /= 100;
+            return "rgb(" + Math.round(255 * (1 - percent)) + ", " + Math.round(255 * percent) + ", 0)";
+        },
+        trackColor: '#333',
+        scaleColor: false,
+        lineCap: 'butt',
+        rotate: -90,
+        lineWidth: 20,
+        animate: 1500,
+        onStep: function(value) {
+            this.$el.find('span').text(~~value);
+        }
+    });
+
+    $('.chart-alt-1').easyPieChart({
+        barColor: function(percent) {
+            percent /= 100;
+            return "rgb(" + Math.round(255 * (1 - percent)) + ", " + Math.round(255 * percent) + ", 0)";
+        },
+        trackColor: '#e1ecf1',
+        scaleColor: '#c4d7e0',
+        lineCap: 'cap',
+        rotate: -90,
+        lineWidth: 10,
+        size: 80,
+        animate: 2500,
+        onStep: function(value) {
+            this.$el.find('span').text(~~value);
+        }
+    });
+
+    $('.chart-alt-2').easyPieChart({
+        barColor: function(percent) {
+            percent /= 100;
+            return "rgb(" + Math.round(255 * (1 - percent)) + ", " + Math.round(255 * percent) + ", 0)";
+        },
+        trackColor: '#fff',
+        scaleColor: false,
+        lineCap: 'butt',
+        rotate: -90,
+        lineWidth: 4,
+        size: 50,
+        animate: 1500,
+        onStep: function(value) {
+            this.$el.find('span').text(~~value);
+        }
+    });
+
+    $('.chart-alt-3').easyPieChart({
+        barColor: function(percent) {
+            percent /= 100;
+            return "rgb(" + Math.round(255 * (1 - percent)) + ", " + Math.round(255 * percent) + ", 0)";
+        },
+        trackColor: '#333',
+        scaleColor: true,
+        lineCap: 'butt',
+        rotate: -90,
+        lineWidth: 4,
+        size: 50,
+        animate: 1500,
+        onStep: function(value) {
+            this.$el.find('span').text(~~value);
+        }
+    });
+
+    $('.chart-alt-10').easyPieChart({
+        barColor: 'rgba(255,255,255,255.4)',
+        trackColor: 'rgba(255,255,255,0.1)',
+        scaleColor: 'transparent',
+        lineCap: 'round',
+        rotate: -90,
+        lineWidth: 4,
+        size: 100,
+        animate: 2500,
+        onStep: function(value) {
+            this.$el.find('span').text(~~value);
+        }
+    });
+
+    $('.updateEasyPieChart').on('click', function(e) {
+        e.preventDefault();
+        $('.chart-home, .chart, .chart-alt, .chart-alt-1, .chart-alt-2, .chart-alt-3, .chart-alt-10').each(function() {
+            $(this).data('easyPieChart').update(Math.round(100 * Math.random()));
+        });
+    });
+};
+
+$(document).ready(function() {
+
+    initPieChart();
+
+});
+
+/* Progress bars */
+
+function progress(percent, element) {
+    var progressBarWidth = percent * element.width() / 100;
+
+    element.find('.progressbar-value').animate({ width: progressBarWidth }, 1200);
+}
+
+$(document).on('ready', function() {
+
+    $('.progressbar').each(function() {
+        var bar = $(this);
+        var max = $(this).attr('data-value');
+
+        progress(max, bar);
+    });
+
+});
+
+$(function(){
+
+    $('#header-right, .updateEasyPieChart, .complete-user-profile, #progress-dropdown, .progress-box').hover(function () {
+
+        $('.progressbar').each(function() {
+            var bar = $(this);
+            var max = $(this).attr('data-value');
+
+            progress(max, bar);
+        });
+
+    });
+
+});
+/*
+ * Superclick v1.0.0 - jQuery menu widget
+ * Copyright (c) 2013 Joel Birch
+ *
+ * Dual licensed under the MIT and GPL licenses:
+ * 	http://www.opensource.org/licenses/mit-license.php
+ * 	http://www.gnu.org/licenses/gpl.html
+ */
+
+;(function($) {
+
+	var methods = (function(){
+		// private properties and methods go here
+		var c = {
+				bcClass: 'sf-breadcrumb',
+				menuClass: 'sf-js-enabled',
+				anchorClass: 'sf-with-ul',
+				menuArrowClass: 'sf-arrows'
+			},
+			outerClick = (function() {
+				$(window).load(function() {
+					$('body').children().on('click.superclick', function() {
+						var $allMenus = $('.sf-js-enabled');
+						$allMenus.superclick('reset');
+					});
+				});
+			})(),
+			toggleMenuClasses = function($menu, o) {
+				var classes = c.menuClass;
+				if (o.cssArrows) {
+					classes += ' ' + c.menuArrowClass;
+				}
+				$menu.toggleClass(classes);
+			},
+			setPathToCurrent = function($menu, o) {
+				return $menu.find('li.' + o.pathClass).slice(0, o.pathLevels)
+					.addClass(o.activeClass + ' ' + c.bcClass)
+						.filter(function() {
+							return ($(this).children('.sidebar-submenu').hide().show().length);
+						}).removeClass(o.pathClass);
+			},
+			toggleAnchorClass = function($li) {
+				$li.children('a').toggleClass(c.anchorClass);
+			},
+			toggleTouchAction = function($menu) {
+				var touchAction = $menu.css('ms-touch-action');
+				touchAction = (touchAction === 'pan-y') ? 'auto' : 'pan-y';
+				$menu.css('ms-touch-action', touchAction);
+			},
+			clickHandler = function(e) {
+				var $this = $(this),
+					$ul = $this.siblings('.sidebar-submenu'),
+					func;
+
+				if ($ul.length) {
+					func = ($ul.is(':hidden')) ? over : out;
+					$.proxy(func, $this.parent('li'))();
+					return false;
+				}
+			},
+			over = function() {
+				var $this = $(this),
+					o = getOptions($this);
+				$this.siblings().superclick('hide').end().superclick('show');
+			},
+			out = function() {
+				var $this = $(this),
+					o = getOptions($this);
+				$.proxy(close, $this, o)();
+			},
+			close = function(o) {
+				o.retainPath = ( $.inArray(this[0], o.$path) > -1);
+				this.superclick('hide');
+
+				if (!this.parents('.' + o.activeClass).length) {
+					o.onIdle.call(getMenu(this));
+					if (o.$path.length) {
+						$.proxy(over, o.$path)();
+					}
+				}
+			},
+			getMenu = function($el) {
+				return $el.closest('.' + c.menuClass);
+			},
+			getOptions = function($el) {
+				return getMenu($el).data('sf-options');
+			};
+
+		return {
+			// public methods
+			hide: function(instant) {
+				if (this.length) {
+					var $this = this,
+						o = getOptions($this);
+						if (!o) {
+							return this;
+						}
+					var not = (o.retainPath === true) ? o.$path : '',
+						$ul = $this.find('li.' + o.activeClass).add(this).not(not).removeClass(o.activeClass).children('.sidebar-submenu'),
+						speed = o.speedOut;
+
+					if (instant) {
+						$ul.show();
+						speed = 0;
+					}
+					o.retainPath = false;
+					o.onBeforeHide.call($ul);
+					$ul.stop(true, true).animate(o.animationOut, speed, function() {
+						var $this = $(this);
+						o.onHide.call($this);
+					});
+				}
+				return this;
+			},
+			show: function() {
+				var o = getOptions(this);
+				if (!o) {
+					return this;
+				}
+				var $this = this.addClass(o.activeClass),
+					$ul = $this.children('.sidebar-submenu');
+
+				o.onBeforeShow.call($ul);
+				$ul.stop(true, true).animate(o.animation, o.speed, function() {
+					o.onShow.call($ul);
+				});
+				return this;
+			},
+			destroy: function() {
+				return this.each(function(){
+					var $this = $(this),
+						o = $this.data('sf-options'),
+						$liHasUl = $this.find('li:has(ul)');
+					if (!o) {
+						return false;
+					}
+					toggleMenuClasses($this, o);
+					toggleAnchorClass($liHasUl);
+					toggleTouchAction($this);
+					// remove event handlers
+					$this.off('.superclick');
+					// clear animation's inline display style
+					$liHasUl.children('.sidebar-submenu').attr('style', function(i, style){
+						return style.replace(/display[^;]+;?/g, '');
+					});
+					// reset 'current' path classes
+					o.$path.removeClass(o.activeClass + ' ' + c.bcClass).addClass(o.pathClass);
+					$this.find('.' + o.activeClass).removeClass(o.activeClass);
+					o.onDestroy.call($this);
+					$this.removeData('sf-options');
+				});
+			},
+			reset: function() {
+				return this.each(function(){
+					var $menu = $(this),
+						o = getOptions($menu),
+						$openLis = $( $menu.find('.' + o.activeClass).toArray().reverse() );
+					$openLis.children('a').trigger('click');
+				});
+			},
+			init: function(op){
+				return this.each(function() {
+					var $this = $(this);
+					if ($this.data('sf-options')) {
+						return false;
+					}
+					var o = $.extend({}, $.fn.superclick.defaults, op),
+						$liHasUl = $this.find('li:has(ul)');
+					o.$path = setPathToCurrent($this, o);
+
+					$this.data('sf-options', o);
+
+					toggleMenuClasses($this, o);
+					toggleAnchorClass($liHasUl);
+					toggleTouchAction($this);
+					$this.on('click.superclick', 'a', clickHandler);
+
+					$liHasUl.not('.' + c.bcClass).superclick('hide',true);
+
+					o.onInit.call(this);
+				});
+			}
+		};
+	})();
+
+	$.fn.superclick = function(method, args) {
+		if (methods[method]) {
+			return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+		}
+		else if (typeof method === 'object' || ! method) {
+			return methods.init.apply(this, arguments);
+		}
+		else {
+			return $.error('Method ' +  method + ' does not exist on jQuery.fn.superclick');
+		}
+	};
+
+	$.fn.superclick.defaults = {
+		activeClass: 'sfHover', // keep 'hover' in classname for compatibility reasons
+		pathClass: 'overrideThisToUse',
+		pathLevels: 1,
+		animation: {opacity:'show'},
+		animationOut: {opacity:'hide'},
+		speed: 'normal',
+		speedOut: 'fast',
+		cssArrows: true,
+		onInit: $.noop,
+		onBeforeShow: $.noop,
+		onShow: $.noop,
+		onBeforeHide: $.noop,
+		onHide: $.noop,
+		onIdle: $.noop,
+		onDestroy: $.noop
+	};
+
+})(jQuery);
+(function( $ ) {
+    $.fn.simpleCheckbox = function(options) {
+        var defaults = {
+            newElementClass: 'switch-toggle',
+            activeElementClass: 'switch-on'
+        };
+        var options = $.extend(defaults, options);
+        this.each(function() {
+            //Assign the current checkbox to obj
+            var obj = $(this);
+            //Create new span element to be styled
+            var newObj = $('<div/>', {
+                'id': '#' + obj.attr('id'),
+                'class': options.newElementClass,
+                'style': 'display: block;'
+            }).insertAfter(this);
+            //Make sure pre-checked boxes are rendered as checked
+            if(obj.is(':checked')) {
+                newObj.addClass(options.activeElementClass);
+            }
+            obj.hide(); //Hide original checkbox
+            //Labels can be painful, let's fix that
+            if($('[for=' + obj.attr('id') + ']').length) {
+
+                var label = $('[for=' + obj.attr('id') + ']');
+                label.click(function() {
+                    newObj.trigger('click'); //Force the label to fire our element
+                    return false;
+                });
+            }
+            //Attach a click handler
+            newObj.click(function() {
+                //Assign current clicked object
+                var obj = $(this);
+                //Check the current state of the checkbox
+                if(obj.hasClass(options.activeElementClass)) {
+                    obj.removeClass(options.activeElementClass);
+                    $(obj.attr('id')).attr('checked',false);
+                } else {
+                    obj.addClass(options.activeElementClass);
+                    $(obj.attr('id')).attr('checked',true);
+                }
+                //Kill the click function
+                return false;
+            });
+        });
+    };
+})(jQuery);
+/*! Copyright (c) 2011 Piotr Rochala (http://rocha.la)
+ * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
+ * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
+ *
+ * Version: 1.3.8
+ *
+ */
+(function($) {
+
+  $.fn.extend({
+    slimScroll: function(options) {
+
+      var defaults = {
+
+        // width in pixels of the visible scroll area
+        width : 'auto',
+
+        // height in pixels of the visible scroll area
+        height : '250px',
+
+        // width in pixels of the scrollbar and rail
+        size : '7px',
+
+        // scrollbar color, accepts any hex/color value
+        color: '#000',
+
+        // scrollbar position - left/right
+        position : 'right',
+
+        // distance in pixels between the side edge and the scrollbar
+        distance : '1px',
+
+        // default scroll position on load - top / bottom / $('selector')
+        start : 'top',
+
+        // sets scrollbar opacity
+        opacity : .4,
+
+        // enables always-on mode for the scrollbar
+        alwaysVisible : false,
+
+        // check if we should hide the scrollbar when user is hovering over
+        disableFadeOut : false,
+
+        // sets visibility of the rail
+        railVisible : false,
+
+        // sets rail color
+        railColor : '#333',
+
+        // sets rail opacity
+        railOpacity : .2,
+
+        // whether  we should use jQuery UI Draggable to enable bar dragging
+        railDraggable : true,
+
+        // defautlt CSS class of the slimscroll rail
+        railClass : 'slimScrollRail',
+
+        // defautlt CSS class of the slimscroll bar
+        barClass : 'slimScrollBar',
+
+        // defautlt CSS class of the slimscroll wrapper
+        wrapperClass : 'slimScrollDiv',
+
+        // check if mousewheel should scroll the window if we reach top/bottom
+        allowPageScroll : false,
+
+        // scroll amount applied to each mouse wheel step
+        wheelStep : 20,
+
+        // scroll amount applied when user is using gestures
+        touchScrollStep : 200,
+
+        // sets border radius
+        borderRadius: '7px',
+
+        // sets border radius of the rail
+        railBorderRadius : '7px'
+      };
+
+      var o = $.extend(defaults, options);
+
+      // do it for every element that matches selector
+      this.each(function(){
+
+      var isOverPanel, isOverBar, isDragg, queueHide, touchDif,
+        barHeight, percentScroll, lastScroll,
+        divS = '<div></div>',
+        minBarHeight = 30,
+        releaseScroll = false;
+
+        // used in event handlers and for better minification
+        var me = $(this);
+
+        // ensure we are not binding it again
+        if (me.parent().hasClass(o.wrapperClass))
+        {
+            // start from last bar position
+            var offset = me.scrollTop();
+
+            // find bar and rail
+            bar = me.siblings('.' + o.barClass);
+            rail = me.siblings('.' + o.railClass);
+
+            getBarHeight();
+
+            // check if we should scroll existing instance
+            if ($.isPlainObject(options))
+            {
+              // Pass height: auto to an existing slimscroll object to force a resize after contents have changed
+              if ( 'height' in options && options.height == 'auto' ) {
+                me.parent().css('height', 'auto');
+                me.css('height', 'auto');
+                var height = me.parent().parent().height();
+                me.parent().css('height', height);
+                me.css('height', height);
+              } else if ('height' in options) {
+                var h = options.height;
+                me.parent().css('height', h);
+                me.css('height', h);
+              }
+
+              if ('scrollTo' in options)
+              {
+                // jump to a static point
+                offset = parseInt(o.scrollTo);
+              }
+              else if ('scrollBy' in options)
+              {
+                // jump by value pixels
+                offset += parseInt(o.scrollBy);
+              }
+              else if ('destroy' in options)
+              {
+                // remove slimscroll elements
+                bar.remove();
+                rail.remove();
+                me.unwrap();
+                return;
+              }
+
+              // scroll content by the given offset
+              scrollContent(offset, false, true);
+            }
+
+            return;
+        }
+        else if ($.isPlainObject(options))
+        {
+            if ('destroy' in options)
+            {
+            	return;
+            }
+        }
+
+        // optionally set height to the parent's height
+        o.height = (o.height == 'auto') ? me.parent().height() : o.height;
+
+        // wrap content
+        var wrapper = $(divS)
+          .addClass(o.wrapperClass)
+          .css({
+            position: 'relative',
+            overflow: 'hidden',
+            width: o.width,
+            height: o.height
+          });
+
+        // update style for the div
+        me.css({
+          overflow: 'hidden',
+          width: o.width,
+          height: o.height
+        });
+
+        // create scrollbar rail
+        var rail = $(divS)
+          .addClass(o.railClass)
+          .css({
+            width: o.size,
+            height: '100%',
+            position: 'absolute',
+            top: 0,
+            display: (o.alwaysVisible && o.railVisible) ? 'block' : 'none',
+            'border-radius': o.railBorderRadius,
+            background: o.railColor,
+            opacity: o.railOpacity,
+            zIndex: 90
+          });
+
+        // create scrollbar
+        var bar = $(divS)
+          .addClass(o.barClass)
+          .css({
+            background: o.color,
+            width: o.size,
+            position: 'absolute',
+            top: 0,
+            opacity: o.opacity,
+            display: o.alwaysVisible ? 'block' : 'none',
+            'border-radius' : o.borderRadius,
+            BorderRadius: o.borderRadius,
+            MozBorderRadius: o.borderRadius,
+            WebkitBorderRadius: o.borderRadius,
+            zIndex: 99
+          });
+
+        // set position
+        var posCss = (o.position == 'right') ? { right: o.distance } : { left: o.distance };
+        rail.css(posCss);
+        bar.css(posCss);
+
+        // wrap it
+        me.wrap(wrapper);
+
+        // append to parent div
+        me.parent().append(bar);
+        me.parent().append(rail);
+
+        // make it draggable and no longer dependent on the jqueryUI
+        if (o.railDraggable){
+          bar.bind("mousedown", function(e) {
+            var $doc = $(document);
+            isDragg = true;
+            t = parseFloat(bar.css('top'));
+            pageY = e.pageY;
+
+            $doc.bind("mousemove.slimscroll", function(e){
+              currTop = t + e.pageY - pageY;
+              bar.css('top', currTop);
+              scrollContent(0, bar.position().top, false);// scroll content
+            });
+
+            $doc.bind("mouseup.slimscroll", function(e) {
+              isDragg = false;hideBar();
+              $doc.unbind('.slimscroll');
+            });
+            return false;
+          }).bind("selectstart.slimscroll", function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            return false;
+          });
+        }
+
+        // on rail over
+        rail.hover(function(){
+          showBar();
+        }, function(){
+          hideBar();
+        });
+
+        // on bar over
+        bar.hover(function(){
+          isOverBar = true;
+        }, function(){
+          isOverBar = false;
+        });
+
+        // show on parent mouseover
+        me.hover(function(){
+          isOverPanel = true;
+          showBar();
+          hideBar();
+        }, function(){
+          isOverPanel = false;
+          hideBar();
+        });
+
+        // support for mobile
+        me.bind('touchstart', function(e,b){
+          if (e.originalEvent.touches.length)
+          {
+            // record where touch started
+            touchDif = e.originalEvent.touches[0].pageY;
+          }
+        });
+
+        me.bind('touchmove', function(e){
+          // prevent scrolling the page if necessary
+          if(!releaseScroll)
+          {
+  		      e.originalEvent.preventDefault();
+		      }
+          if (e.originalEvent.touches.length)
+          {
+            // see how far user swiped
+            var diff = (touchDif - e.originalEvent.touches[0].pageY) / o.touchScrollStep;
+            // scroll content
+            scrollContent(diff, true);
+            touchDif = e.originalEvent.touches[0].pageY;
+          }
+        });
+
+        // set up initial height
+        getBarHeight();
+
+        // check start position
+        if (o.start === 'bottom')
+        {
+          // scroll content to bottom
+          bar.css({ top: me.outerHeight() - bar.outerHeight() });
+          scrollContent(0, true);
+        }
+        else if (o.start !== 'top')
+        {
+          // assume jQuery selector
+          scrollContent($(o.start).position().top, null, true);
+
+          // make sure bar stays hidden
+          if (!o.alwaysVisible) { bar.hide(); }
+        }
+
+        // attach scroll events
+        attachWheel(this);
+
+        function _onWheel(e)
+        {
+          // use mouse wheel only when mouse is over
+          if (!isOverPanel) { return; }
+
+          var e = e || window.event;
+
+          var delta = 0;
+          if (e.wheelDelta) { delta = -e.wheelDelta/120; }
+          if (e.detail) { delta = e.detail / 3; }
+
+          var target = e.target || e.srcTarget || e.srcElement;
+          if ($(target).closest('.' + o.wrapperClass).is(me.parent())) {
+            // scroll content
+            scrollContent(delta, true);
+          }
+
+          // stop window scroll
+          if (e.preventDefault && !releaseScroll) { e.preventDefault(); }
+          if (!releaseScroll) { e.returnValue = false; }
+        }
+
+        function scrollContent(y, isWheel, isJump)
+        {
+          releaseScroll = false;
+          var delta = y;
+          var maxTop = me.outerHeight() - bar.outerHeight();
+
+          if (isWheel)
+          {
+            // move bar with mouse wheel
+            delta = parseInt(bar.css('top')) + y * parseInt(o.wheelStep) / 100 * bar.outerHeight();
+
+            // move bar, make sure it doesn't go out
+            delta = Math.min(Math.max(delta, 0), maxTop);
+
+            // if scrolling down, make sure a fractional change to the
+            // scroll position isn't rounded away when the scrollbar's CSS is set
+            // this flooring of delta would happened automatically when
+            // bar.css is set below, but we floor here for clarity
+            delta = (y > 0) ? Math.ceil(delta) : Math.floor(delta);
+
+            // scroll the scrollbar
+            bar.css({ top: delta + 'px' });
+          }
+
+          // calculate actual scroll amount
+          percentScroll = parseInt(bar.css('top')) / (me.outerHeight() - bar.outerHeight());
+          delta = percentScroll * (me[0].scrollHeight - me.outerHeight());
+
+          if (isJump)
+          {
+            delta = y;
+            var offsetTop = delta / me[0].scrollHeight * me.outerHeight();
+            offsetTop = Math.min(Math.max(offsetTop, 0), maxTop);
+            bar.css({ top: offsetTop + 'px' });
+          }
+
+          // scroll content
+          me.scrollTop(delta);
+
+          // fire scrolling event
+          me.trigger('slimscrolling', ~~delta);
+
+          // ensure bar is visible
+          showBar();
+
+          // trigger hide when scroll is stopped
+          hideBar();
+        }
+
+        function attachWheel(target)
+        {
+          if (window.addEventListener)
+          {
+            target.addEventListener('DOMMouseScroll', _onWheel, false );
+            target.addEventListener('mousewheel', _onWheel, false );
+          }
+          else
+          {
+            document.attachEvent("onmousewheel", _onWheel)
+          }
+        }
+
+        function getBarHeight()
+        {
+          // calculate scrollbar height and make sure it is not too small
+          barHeight = Math.max((me.outerHeight() / me[0].scrollHeight) * me.outerHeight(), minBarHeight);
+          bar.css({ height: barHeight + 'px' });
+
+          // hide scrollbar if content is not long enough
+          var display = barHeight == me.outerHeight() ? 'none' : 'block';
+          bar.css({ display: display });
+        }
+
+        function showBar()
+        {
+          // recalculate bar height
+          getBarHeight();
+          clearTimeout(queueHide);
+
+          // when bar reached top or bottom
+          if (percentScroll == ~~percentScroll)
+          {
+            //release wheel
+            releaseScroll = o.allowPageScroll;
+
+            // publish approporiate event
+            if (lastScroll != percentScroll)
+            {
+                var msg = (~~percentScroll == 0) ? 'top' : 'bottom';
+                me.trigger('slimscroll', msg);
+            }
+          }
+          else
+          {
+            releaseScroll = false;
+          }
+          lastScroll = percentScroll;
+
+          // show only when required
+          if(barHeight >= me.outerHeight()) {
+            //allow window scroll
+            releaseScroll = true;
+            return;
+          }
+          bar.stop(true,true).fadeIn('fast');
+          if (o.railVisible) { rail.stop(true,true).fadeIn('fast'); }
+        }
+
+        function hideBar()
+        {
+          // only hide when options allow it
+          if (!o.alwaysVisible)
+          {
+            queueHide = setTimeout(function(){
+              if (!(o.disableFadeOut && isOverPanel) && !isOverBar && !isDragg)
+              {
+                bar.fadeOut('slow');
+                rail.fadeOut('slow');
+              }
+            }, 1000);
+          }
+        }
+
+      });
+
+      // maintain chainability
+      return this;
+    }
+  });
+
+  $.fn.extend({
+    slimscroll: $.fn.slimScroll
+  });
+
+})(jQuery);
+
+// -----------------------------------
+// Slidebars
+// Development version, do not use this in your site, use the latest in the distribution folder.
+// http://plugins.adchsm.me/slidebars/
+//
+// Written by Adam Smith
+// http://www.adchsm.me/
+//
+// Released under MIT License
+// http://plugins.adchsm.me/slidebars/license.txt
+//
+// ---------------------
+// Index of Slidebars.js
+//
+// 001 - Default Settings
+// 002 - Feature Detection
+// 003 - User Agents
+// 004 - Setup
+// 005 - Animation
+// 006 - Operations
+// 007 - API
+// 008 - User Input
+
+;(function($) {
+
+    $.slidebars = function(options) {
+
+        // ----------------------
+        // 001 - Default Settings
+
+        var settings = $.extend({
+            siteClose: true, // true or false - Enable closing of Slidebars by clicking on #sb-site.
+            scrollLock: false, // true or false - Prevent scrolling of site when a Slidebar is open.
+            disableOver: false, // integer or false - Hide Slidebars over a specific width.
+            hideControlClasses: false // true or false - Hide controls at same width as disableOver.
+        }, options);
+
+        // -----------------------
+        // 002 - Feature Detection
+
+        var test = document.createElement('div').style, // Create element to test on.
+            supportTransition = false, // Variable for testing transitions.
+            supportTransform = false; // variable for testing transforms.
+
+        // Test for CSS Transitions
+        if (test.MozTransition === '' || test.WebkitTransition === '' || test.OTransition === '' || test.transition === '') supportTransition = true;
+
+        // Test for CSS Transforms
+        if (test.MozTransform === '' || test.WebkitTransform === '' || test.OTransform === '' || test.transform === '') supportTransform = true;
+
+        // -----------------
+        // 003 - User Agents
+
+        var ua = navigator.userAgent, // Get user agent string.
+            android = false, // Variable for storing android version.
+            iOS = false; // Variable for storing iOS version.
+
+        if (/Android/.test(ua)) { // Detect Android in user agent string.
+            android = ua.substr(ua.indexOf('Android')+8, 3); // Set version of Android.
+        } else if (/(iPhone|iPod|iPad)/.test(ua)) { // Detect iOS in user agent string.
+            iOS = ua.substr(ua.indexOf('OS ')+3, 3).replace('_', '.'); // Set version of iOS.
+        }
+
+        if (android && android < 3 || iOS && iOS < 5) $('html').addClass('sb-static'); // Add helper class for older versions of Android & iOS.
+
+        // -----------
+        // 004 - Setup
+
+        // Site container
+        var $site = $('#sb-site, .sb-site-container'); // Cache the selector.
+
+        // Left Slidebar
+        if ($('.sb-left').length) { // Check if the left Slidebar exists.
+            var $left = $('.sb-left'), // Cache the selector.
+                leftActive = false; // Used to check whether the left Slidebar is open or closed.
+        }
+
+        // Right Slidebar
+        if ($('.sb-right').length) { // Check if the right Slidebar exists.
+            var $right = $('.sb-right'), // Cache the selector.
+                rightActive = false; // Used to check whether the right Slidebar is open or closed.
+        }
+
+        var init = false, // Initialisation variable.
+            windowWidth = $(window).width(), // Get width of window.
+            $controls = $('.sb-toggle-left, .sb-toggle-right, .sb-open-left, .sb-open-right, .sb-close'), // Cache the control classes.
+            $slide = $('.sb-slide'); // Cache users elements to animate.
+
+        // Initailise Slidebars
+        function initialise() {
+            if (!settings.disableOver || (typeof settings.disableOver === 'number' && settings.disableOver >= windowWidth)) { // False or larger than window size.
+                init = true; // true enabled Slidebars to open.
+                $('html').addClass('sb-init'); // Add helper class.
+                if (settings.hideControlClasses) $controls.removeClass('sb-hide'); // Remove class just incase Slidebars was originally disabled.
+                css(); // Set required inline styles.
+            } else if (typeof settings.disableOver === 'number' && settings.disableOver < windowWidth) { // Less than window size.
+                init = false; // false stop Slidebars from opening.
+                $('html').removeClass('sb-init'); // Remove helper class.
+                if (settings.hideControlClasses) $controls.addClass('sb-hide'); // Hide controls
+                $site.css('minHeight', ''); // Remove minimum height.
+                if (leftActive || rightActive) close(); // Close Slidebars if open.
+            }
+        }
+        initialise();
+
+        // Inline CSS
+        function css() {
+            // Set minimum height.
+            $site.css('minHeight', ''); // Reset minimum height.
+            $site.css('minHeight', $('html').height() + 'px'); // Set minimum height of the site to the minimum height of the html.
+
+            // Custom Slidebar widths.
+            if ($left && $left.hasClass('sb-width-custom')) $left.css('width', $left.attr('data-sb-width')); // Set user custom width.
+            if ($right && $right.hasClass('sb-width-custom')) $right.css('width', $right.attr('data-sb-width')); // Set user custom width.
+
+            // Set off-canvas margins for Slidebars with push and overlay animations.
+            if ($left && ($left.hasClass('sb-style-push') || $left.hasClass('sb-style-overlay'))) $left.css('marginLeft', '-' + $left.css('width'));
+            if ($right && ($right.hasClass('sb-style-push') || $right.hasClass('sb-style-overlay'))) $right.css('marginRight', '-' + $right.css('width'));
+
+            // Site scroll locking.
+            if (settings.scrollLock) $('html').addClass('sb-scroll-lock');
+        }
+
+        // Resize Functions
+        $(window).resize(function() {
+            var resizedWindowWidth = $(window).width(); // Get resized window width.
+            if (windowWidth !== resizedWindowWidth) { // Slidebars is running and window was actually resized.
+                windowWidth = resizedWindowWidth; // Set the new window width.
+                initialise(); // Call initalise to see if Slidebars should still be running.
+                if (leftActive) open('left'); // If left Slidebar is open, calling open will ensure it is the correct size.
+                if (rightActive) open('right'); // If right Slidebar is open, calling open will ensure it is the correct size.
+            }
+        });
+        // I may include a height check along side a width check here in future.
+
+        // ---------------
+        // 005 - Animation
+
+        var animation; // Animation type.
+
+        // Set animation type.
+        if (supportTransition && supportTransform) { // Browser supports css transitions and transforms.
+            animation = 'translate'; // Translate for browsers that support it.
+            if (android && android < 4.4) animation = 'side'; // Android supports both, but can't translate any fixed positions, so use left instead.
+        } else {
+            animation = 'jQuery'; // Browsers that don't support css transitions and transitions.
+        }
+
+        // Animate mixin.
+        function animate(object, amount, side) {
+            // Choose selectors depending on animation style.
+            var selector;
+
+            if (object.hasClass('sb-style-push')) {
+                selector = $site.add(object).add($slide); // Push - Animate site, Slidebar and user elements.
+            } else if (object.hasClass('sb-style-overlay')) {
+                selector = object; // Overlay - Animate Slidebar only.
+            } else {
+                selector = $site.add($slide); // Reveal - Animate site and user elements.
+            }
+
+            // Apply animation
+            if (animation === 'translate') {
+                selector.css('transform', 'translate(' + amount + ')'); // Apply the animation.
+
+            } else if (animation === 'side') {
+                if (amount[0] === '-') amount = amount.substr(1); // Remove the '-' from the passed amount for side animations.
+                if (amount !== '0px') selector.css(side, '0px'); // Add a 0 value so css transition works.
+                setTimeout(function() { // Set a timeout to allow the 0 value to be applied above.
+                    selector.css(side, amount); // Apply the animation.
+                }, 1);
+
+            } else if (animation === 'jQuery') {
+                if (amount[0] === '-') amount = amount.substr(1); // Remove the '-' from the passed amount for jQuery animations.
+                var properties = {};
+                properties[side] = amount;
+                selector.stop().animate(properties, 400); // Stop any current jQuery animation before starting another.
+            }
+
+            // If closed, remove the inline styling on completion of the animation.
+            setTimeout(function() {
+                if (amount === '0px') {
+                    selector.removeAttr('style');
+                    css();
+                }
+            }, 400);
+        }
+
+        // ----------------
+        // 006 - Operations
+
+        // Open a Slidebar
+        function open(side, callback) {
+            // Check to see if opposite Slidebar is open.
+            if (side === 'left' && $left && rightActive || side === 'right' && $right && leftActive) { // It's open, close it, then continue.
+                close();
+                setTimeout(proceed, 400);
+            } else { // Its not open, continue.
+                proceed();
+            }
+
+            // Open
+            function proceed() {
+                if (init && side === 'left' && $left) { // Slidebars is initiated, left is in use and called to open.
+                    $('html').addClass('sb-active sb-active-left'); // Add active classes.
+                    $left.addClass('sb-active');
+                    animate($left, $left.css('width'), 'left'); // Animation
+                    setTimeout(function() {
+                        leftActive = true;
+                        if (typeof callback === 'function') callback(); // Run callback function.
+                    }, 400); // Set active variables.
+                } else if (init && side === 'right' && $right) { // Slidebars is initiated, right is in use and called to open.
+                    $('html').addClass('sb-active sb-active-right'); // Add active classes.
+                    $right.addClass('sb-active');
+                    animate($right, '-' + $right.css('width'), 'right'); // Animation
+                    setTimeout(function() {
+                        rightActive = true;
+                        if (typeof callback === 'function') callback(); // Run callback function.
+                    }, 400); // Set active variables.
+                }
+            }
+        }
+
+        // Close either Slidebar
+        function close(callback) {
+            if (leftActive || rightActive) { // If a Slidebar is open.
+                if (leftActive) {
+                    animate($left, '0px', 'left'); // Animation
+                    leftActive = false;
+                }
+                if (rightActive) {
+                    animate($right, '0px', 'right'); // Animation
+                    rightActive = false;
+                }
+
+                setTimeout(function() { // Wait for closing animation to finish.
+                    $('html').removeClass('sb-active sb-active-left sb-active-right'); // Remove active classes.
+                    if ($left) $left.removeClass('sb-active');
+                    if ($right) $right.removeClass('sb-active');
+                    if (typeof callback === 'function') callback(); // Run callback function.
+                }, 400);
+            }
+        }
+
+        // Toggle either Slidebar
+        function toggle(side, callback) {
+            if (side === 'left' && $left) { // If left Slidebar is called and in use.
+                if (!leftActive) {
+                    open('left', callback); // Slidebar is closed, open it.
+                } else {
+                    close(null, callback); // Slidebar is open, close it.
+                }
+            }
+            if (side === 'right' && $right) { // If right Slidebar is called and in use.
+                if (!rightActive) {
+                    open('right', callback); // Slidebar is closed, open it.
+                } else {
+                    close(null, callback); // Slidebar is open, close it.
+                }
+            }
+        }
+
+        // ---------
+        // 007 - API
+
+        this.slidebars = {
+            open: open, // Maps user variable name to the open method.
+            close: close, // Maps user variable name to the close method.
+            toggle: toggle, // Maps user variable name to the toggle method.
+            init: function() { // Returns true or false whether Slidebars are running or not.
+                return init; // Returns true or false whether Slidebars are running.
+            },
+            reInit: initialise, // Run the init method to check if the plugin should still be running.
+            resetCSS: css, // Reset inline
+            active: function(side) { // Returns true or false whether Slidebar is open or closed.
+                if (side === 'left' && $left) return leftActive;
+                if (side === 'right' && $right) return rightActive;
+            },
+            destroy: function(side) { // Removes the Slidebar from the DOM.
+                if (side === 'left' && $left) {
+                    if (leftActive) close(); // Close if its open.
+                    setTimeout(function() {
+                        $left.remove(); // Remove it.
+                        $left = false; // Set variable to false so it cannot be opened again.
+                    }, 400);
+                }
+                if (side === 'right' && $right) {
+                    if (rightActive) close(); // Close if its open.
+                    setTimeout(function() {
+                        $right.remove(); // Remove it.
+                        $right = false; // Set variable to false so it cannot be opened again.
+                    }, 400);
+                }
+            }
+        };
+
+        // ----------------
+        // 008 - User Input
+
+        function eventHandler(event, selector) {
+            event.stopPropagation(); // Stop event bubbling.
+            event.preventDefault(); // Prevent default behaviour.
+            if (event.type === 'touchend') selector.off('click'); // If event type was touch, turn off clicks to prevent phantom clicks.
+        }
+
+        // Toggle left Slidebar
+        $('.sb-toggle-left').on('touchend click', function(event) {
+            eventHandler(event, $(this)); // Handle the event.
+            toggle('left'); // Toggle the left Slidbar.
+        });
+
+        // Toggle right Slidebar
+        $('.sb-toggle-right').on('touchend click', function(event) {
+            eventHandler(event, $(this)); // Handle the event.
+            toggle('right'); // Toggle the right Slidbar.
+        });
+
+        // Open left Slidebar
+        $('.sb-open-left').on('touchend click', function(event) {
+            eventHandler(event, $(this)); // Handle the event.
+            open('left'); // Open the left Slidebar.
+        });
+
+        // Open right Slidebar
+        $('.sb-open-right').on('touchend click', function(event) {
+            eventHandler(event, $(this)); // Handle the event.
+            open('right'); // Open the right Slidebar.
+        });
+
+        // Close Slidebar
+        $('.sb-close').on('touchend click', function(event) {
+            if ( $(this).is('a') || $(this).children().is('a') ) { // Is a link or contains a link.
+                if ( event.type === 'click' ) { // Make sure the user wanted to follow the link.
+                    event.preventDefault(); // Stop default behaviour.
+                    var href = ( $(this).is('a') ? $(this).attr('href') : $(this).find('a').attr('href') ); // Get the href.
+                    close(function() { // Close Slidebar and pass callback to redirect.
+                        window.location = href;
+                    });
+                }
+            } else { // Just a normal control class.
+                eventHandler(event, $(this)); // Handle the event.
+                close(); // Close Slidebar.
+            }
+        });
+
+        // Close Slidebar via site
+        $site.on('touchend click', function(event) {
+            if (settings.siteClose && (leftActive || rightActive)) { // If settings permit closing by site and left or right Slidebar is open.
+                eventHandler(event, $(this)); // Handle the event.
+                close(); // Close it.
+            }
+        });
+
+    }; // End Slidebars function.
+
+}) (jQuery);
+
+/* Slidebars */
+
+(function($) {
+    $(document).ready(function() {
+        $.slidebars();
+    });
+})(jQuery);
+
+(function () {
+	'use strict';
+
+	var isCommonjs = typeof module !== 'undefined' && module.exports;
+	var keyboardAllowed = typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element;
+
+	var fn = (function () {
+		var val;
+		var valLength;
+
+		var fnMap = [
+			[
+				'requestFullscreen',
+				'exitFullscreen',
+				'fullscreenElement',
+				'fullscreenEnabled',
+				'fullscreenchange',
+				'fullscreenerror'
+			],
+			// new WebKit
+			[
+				'webkitRequestFullscreen',
+				'webkitExitFullscreen',
+				'webkitFullscreenElement',
+				'webkitFullscreenEnabled',
+				'webkitfullscreenchange',
+				'webkitfullscreenerror'
+
+			],
+			// old WebKit (Safari 5.1)
+			[
+				'webkitRequestFullScreen',
+				'webkitCancelFullScreen',
+				'webkitCurrentFullScreenElement',
+				'webkitCancelFullScreen',
+				'webkitfullscreenchange',
+				'webkitfullscreenerror'
+
+			],
+			[
+				'mozRequestFullScreen',
+				'mozCancelFullScreen',
+				'mozFullScreenElement',
+				'mozFullScreenEnabled',
+				'mozfullscreenchange',
+				'mozfullscreenerror'
+			],
+			[
+				'msRequestFullscreen',
+				'msExitFullscreen',
+				'msFullscreenElement',
+				'msFullscreenEnabled',
+				'MSFullscreenChange',
+				'MSFullscreenError'
+			]
+		];
+
+		var i = 0;
+		var l = fnMap.length;
+		var ret = {};
+
+		for (; i < l; i++) {
+			val = fnMap[i];
+			if (val && val[1] in document) {
+				for (i = 0, valLength = val.length; i < valLength; i++) {
+					ret[fnMap[0][i]] = val[i];
+				}
+				return ret;
+			}
+		}
+
+		return false;
+	})();
+
+	var screenfull = {
+		request: function (elem) {
+			var request = fn.requestFullscreen;
+
+			elem = elem || document.documentElement;
+
+			// Work around Safari 5.1 bug: reports support for
+			// keyboard in fullscreen even though it doesn't.
+			// Browser sniffing, since the alternative with
+			// setTimeout is even worse.
+			if (/5\.1[\.\d]* Safari/.test(navigator.userAgent)) {
+				elem[request]();
+			} else {
+				elem[request](keyboardAllowed && Element.ALLOW_KEYBOARD_INPUT);
+			}
+		},
+		exit: function () {
+			document[fn.exitFullscreen]();
+		},
+		toggle: function (elem) {
+			if (this.isFullscreen) {
+				this.exit();
+			} else {
+				this.request(elem);
+			}
+		},
+		raw: fn
+	};
+
+	if (!fn) {
+		if (isCommonjs) {
+			module.exports = false;
+		} else {
+			window.screenfull = false;
+		}
+
+		return;
+	}
+
+	Object.defineProperties(screenfull, {
+		isFullscreen: {
+			get: function () {
+				return Boolean(document[fn.fullscreenElement]);
+			}
+		},
+		element: {
+			enumerable: true,
+			get: function () {
+				return document[fn.fullscreenElement];
+			}
+		},
+		enabled: {
+			enumerable: true,
+			get: function () {
+				// Coerce to boolean in case of old WebKit
+				return Boolean(document[fn.fullscreenEnabled]);
+			}
+		}
+	});
+
+	if (isCommonjs) {
+		module.exports = screenfull;
+	} else {
+		window.screenfull = screenfull;
+	}
+})();
+
+$(document).ready(function(){
+
+    /* Box switch toggle */
+
+  $('.switch-button').click(function(ev){
+
+    ev.preventDefault();
+
+    var switchParent = $(this).attr('switch-parent');
+    var switchTarget = $(this).attr('switch-target');
+
+    $(switchParent).slideToggle();
+    $(switchTarget).slideToggle();
+
+  });
+
+    /* Content Box Show/Hide Buttons */
+
+  $('.hidden-button').hover(function(){
+
+    $(".btn-hide", this).fadeIn('fast');
+
+  },function(){
+
+    $(".btn-hide", this).fadeOut('normal');
+
+  });
+
+
+  /* Content Box Toggle */
+
+  $('.toggle-button').click(function(ev) {
+
+    ev.preventDefault();
+
+    $(".glyph-icon", this).toggleClass("icon-rotate-180");
+
+    $(this).parents(".content-box:first").find(".content-box-wrapper").slideToggle();
+
+  });
+
+  /* Content Box Remove */
+
+  $('.remove-button').click(function(ev){
+
+      ev.preventDefault();
+
+      var animationEFFECT = $(this).attr('data-animation');
+
+      var animationTARGET = $(this).parents(".content-box:first");
+
+      $(animationTARGET).addClass('animated');
+      $(animationTARGET).addClass(animationEFFECT);
+
+      var wait = window.setTimeout( function(){
+        $(animationTARGET).slideUp()},
+        500
+      );
+
+      /* Demo show removed content box */
+
+      var wait2 = window.setTimeout( function(){
+        $(animationTARGET).removeClass(animationEFFECT).fadeIn()},
+        2500
+      );
+
+  });
+
+  /* Close Info Boxes */
+
+  $(function() { "use strict";
+
+    $(".infobox-close").click(function(ev){
+
+      ev.preventDefault();
+
+      $(this).parent().fadeOut();
+
+    });
+
+
+  });
+
+});
+$(document).ready(function(){
+
+  /* Loader Show */
+
+  $('.overlay-button').click(function(){
+
+	var loadertheme = $(this).attr('data-theme');
+	var loaderopacity = $(this).attr('data-opacity');
+	var loaderstyle = $(this).attr('data-style');
+
+
+	var loader = '<div id="loader-overlay" class="ui-front loader ui-widget-overlay ' + loadertheme + ' opacity-' + loaderopacity + '"><img src="../../assets/images/spinner/loader-' + loaderstyle + '.gif" alt="" /></div>';
+
+    if ( $('#loader-overlay').length ) {
+	    $('#loader-overlay').remove();
+    }
+    $('body').append(loader);
+    $('#loader-overlay').fadeIn('fast');
+
+    //demo
+
+    setTimeout(function() {
+      $('#loader-overlay').fadeOut('fast');
+    }, 3000);
+
+  });
+
+	/* Refresh Box */
+
+	$('.refresh-button').click(function(ev){
+
+		$('.glyph-icon', this).addClass('icon-spin');
+
+	    ev.preventDefault();
+
+	    var refreshParent = $(this).parents('.content-box');
+
+		var loaderTheme = $(this).attr('data-theme');
+		var loaderOpacity = $(this).attr('data-opacity');
+		var loaderStyle = $(this).attr('data-style');
+
+
+		var loader = '<div id="refresh-overlay" class="ui-front loader ui-widget-overlay ' + loaderTheme + ' opacity-' + loaderOpacity + '"><img src="../../assets/images/spinner/loader-' + loaderStyle + '.gif" alt="" /></div>';
+
+        if ( $('#refresh-overlay').length ) {
+            $('#refresh-overlay').remove();
+        }
+	    $(refreshParent).append(loader);
+	    $('#refresh-overlay').fadeIn('fast');
+
+		//DEMO
+
+        setTimeout(function() {
+            $('#refresh-overlay').fadeOut('fast');
+            $('.glyph-icon', this).removeClass('icon-spin');
+        }, 1500);
+
+	});
 
 });
