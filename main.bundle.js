@@ -103,15 +103,16 @@ var AppComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_40__no_content_no_content__ = __webpack_require__("../../../../../src/app/no-content/no-content.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_41__settings_app_routing_module__ = __webpack_require__("../../../../../src/app/settings/app-routing.module.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_42_ngx_cookie__ = __webpack_require__("../../../../ngx-cookie/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_43_ngx_bootstrap__ = __webpack_require__("../../../../ngx-bootstrap/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_44__openmrs_api_authentication_service__ = __webpack_require__("../../../../../src/app/openmrs-api/authentication.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_45__openmrs_api_session_service__ = __webpack_require__("../../../../../src/app/openmrs-api/session.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_46__patient_search_patient_search_service__ = __webpack_require__("../../../../../src/app/patient-search/patient-search.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_47__openmrs_api_patient_resource_service__ = __webpack_require__("../../../../../src/app/openmrs-api/patient-resource.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_48__openmrs_api_user_service__ = __webpack_require__("../../../../../src/app/openmrs-api/user.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_49__settings_app_settings_service__ = __webpack_require__("../../../../../src/app/settings/app-settings.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_50__utils_local_storage_service__ = __webpack_require__("../../../../../src/app/utils/local-storage.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_51__utils_session_storage_service__ = __webpack_require__("../../../../../src/app/utils/session-storage.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_43_ngx_pagination__ = __webpack_require__("../../../../ngx-pagination/dist/ngx-pagination.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_44_ngx_bootstrap__ = __webpack_require__("../../../../ngx-bootstrap/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_45__openmrs_api_authentication_service__ = __webpack_require__("../../../../../src/app/openmrs-api/authentication.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_46__openmrs_api_session_service__ = __webpack_require__("../../../../../src/app/openmrs-api/session.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_47__patient_search_patient_search_service__ = __webpack_require__("../../../../../src/app/patient-search/patient-search.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_48__openmrs_api_patient_resource_service__ = __webpack_require__("../../../../../src/app/openmrs-api/patient-resource.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_49__openmrs_api_user_service__ = __webpack_require__("../../../../../src/app/openmrs-api/user.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_50__settings_app_settings_service__ = __webpack_require__("../../../../../src/app/settings/app-settings.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_51__utils_local_storage_service__ = __webpack_require__("../../../../../src/app/utils/local-storage.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_52__utils_session_storage_service__ = __webpack_require__("../../../../../src/app/utils/session-storage.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -163,6 +164,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 // Modules
 
 
+
 // External Lib Service Providers
 
 // import * as ngx_cookie from 'ngx-cookie';
@@ -187,7 +189,8 @@ var AppModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_41__settings_app_routing_module__["a" /* AppRoutingModule */],
                 __WEBPACK_IMPORTED_MODULE_3__angular_http__["c" /* HttpModule */],
                 __WEBPACK_IMPORTED_MODULE_42_ngx_cookie__["a" /* CookieModule */].forRoot(),
-                __WEBPACK_IMPORTED_MODULE_43_ngx_bootstrap__["d" /* ModalModule */],
+                __WEBPACK_IMPORTED_MODULE_43_ngx_pagination__["a" /* NgxPaginationModule */],
+                __WEBPACK_IMPORTED_MODULE_44_ngx_bootstrap__["d" /* ModalModule */],
             ],
             declarations: [
                 __WEBPACK_IMPORTED_MODULE_4__dashboard_dashboard_component__["a" /* DashboardComponent */],
@@ -231,20 +234,20 @@ var AppModule = (function () {
             // entryComponents: [ngx_core.ModalBackdropComponent],
             providers: [
                 // external providers 
-                __WEBPACK_IMPORTED_MODULE_43_ngx_bootstrap__["a" /* BsModalRef */],
-                __WEBPACK_IMPORTED_MODULE_43_ngx_bootstrap__["b" /* BsModalService */],
-                __WEBPACK_IMPORTED_MODULE_43_ngx_bootstrap__["e" /* PositioningService */],
-                __WEBPACK_IMPORTED_MODULE_43_ngx_bootstrap__["c" /* ComponentLoaderFactory */],
+                __WEBPACK_IMPORTED_MODULE_44_ngx_bootstrap__["a" /* BsModalRef */],
+                __WEBPACK_IMPORTED_MODULE_44_ngx_bootstrap__["b" /* BsModalService */],
+                __WEBPACK_IMPORTED_MODULE_44_ngx_bootstrap__["e" /* PositioningService */],
+                __WEBPACK_IMPORTED_MODULE_44_ngx_bootstrap__["c" /* ComponentLoaderFactory */],
                 //openmrs-rest-api providers    
-                __WEBPACK_IMPORTED_MODULE_44__openmrs_api_authentication_service__["a" /* AuthenticationService */],
-                __WEBPACK_IMPORTED_MODULE_46__patient_search_patient_search_service__["a" /* PatientSearchService */],
-                __WEBPACK_IMPORTED_MODULE_47__openmrs_api_patient_resource_service__["a" /* PatientResourceService */],
-                __WEBPACK_IMPORTED_MODULE_45__openmrs_api_session_service__["a" /* SessionService */],
+                __WEBPACK_IMPORTED_MODULE_45__openmrs_api_authentication_service__["a" /* AuthenticationService */],
+                __WEBPACK_IMPORTED_MODULE_47__patient_search_patient_search_service__["a" /* PatientSearchService */],
+                __WEBPACK_IMPORTED_MODULE_48__openmrs_api_patient_resource_service__["a" /* PatientResourceService */],
+                __WEBPACK_IMPORTED_MODULE_46__openmrs_api_session_service__["a" /* SessionService */],
                 // custom providers
-                __WEBPACK_IMPORTED_MODULE_49__settings_app_settings_service__["a" /* AppSettingsService */],
-                __WEBPACK_IMPORTED_MODULE_50__utils_local_storage_service__["a" /* LocalStorageService */],
-                __WEBPACK_IMPORTED_MODULE_51__utils_session_storage_service__["a" /* SessionStorageService */],
-                __WEBPACK_IMPORTED_MODULE_48__openmrs_api_user_service__["a" /* UserService */]
+                __WEBPACK_IMPORTED_MODULE_50__settings_app_settings_service__["a" /* AppSettingsService */],
+                __WEBPACK_IMPORTED_MODULE_51__utils_local_storage_service__["a" /* LocalStorageService */],
+                __WEBPACK_IMPORTED_MODULE_52__utils_session_storage_service__["a" /* SessionStorageService */],
+                __WEBPACK_IMPORTED_MODULE_49__openmrs_api_user_service__["a" /* UserService */]
             ],
             bootstrap: [
                 __WEBPACK_IMPORTED_MODULE_11__app_component__["a" /* AppComponent */]
@@ -2308,6 +2311,8 @@ var AuthenticationService = (function () {
                 // store logged in user details in session storage
                 var user = data.user;
                 _this.storeUser(user);
+                var jsessionid = data.sessionId;
+                _this.storeSessionId(jsessionid);
             }
         });
         return request;
@@ -2343,6 +2348,9 @@ var AuthenticationService = (function () {
     AuthenticationService.prototype.storeUser = function (user) {
         this.sessionStorageService.setObject(__WEBPACK_IMPORTED_MODULE_5__utils_constants__["a" /* Constants */].USER_KEY, user);
     };
+    AuthenticationService.prototype.storeSessionId = function (jsessionid) {
+        this.sessionStorageService.setItem(__WEBPACK_IMPORTED_MODULE_5__utils_constants__["a" /* Constants */].SESSION_ID, jsessionid);
+    };
     AuthenticationService.prototype.clearUserDetails = function () {
         this.sessionStorageService.remove(__WEBPACK_IMPORTED_MODULE_5__utils_constants__["a" /* Constants */].USER_KEY);
     };
@@ -2372,6 +2380,7 @@ var AuthenticationService = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__settings_app_settings_service__ = __webpack_require__("../../../../../src/app/settings/app-settings.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__("../../../http/esm5/http.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_session_storage_service__ = __webpack_require__("../../../../../src/app/utils/session-storage.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -2384,15 +2393,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 // TODO inject service
 var PatientResourceService = (function () {
-    function PatientResourceService(http, appSettingsService) {
+    function PatientResourceService(http, appSettingsService, sessionStorageService) {
         this.http = http;
         this.appSettingsService = appSettingsService;
+        this.sessionStorageService = sessionStorageService;
         this.v = 'custom:(uuid,display,' +
             'identifiers:(identifier,uuid,preferred,location:(uuid,name),' +
             'identifierType:(uuid,name,format,formatDescription,checkDigit,validator)),' +
-            'person:(uuid,display,gender,birthdate,dead,age,deathDate,' +
+            'person:(uuid,display,gender,birthdate,dead,age,deathDate,birthdateEstimated,' +
             'causeOfDeath,preferredName:(uuid,preferred,givenName,middleName,familyName),'
             + 'attributes,preferredAddress:(uuid,preferred,address1,address2,cityVillage,' +
             'stateProvince,country,postalCode,countyDistrict,address3,address4,address5,address6)))';
@@ -2403,12 +2414,17 @@ var PatientResourceService = (function () {
     PatientResourceService.prototype.searchPatient = function (searchText, cached, v) {
         if (cached === void 0) { cached = false; }
         if (v === void 0) { v = null; }
+        // Add Authorization
+        var headers = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Headers */]();
+        var base64 = this.sessionStorageService.getItem('auth.credentials');
+        headers.append('Authorization', 'Basic ' + base64);
         var url = this.getUrl();
         var params = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["e" /* URLSearchParams */]();
         params.set('q', searchText);
         params.set('v', (v && v.length > 0) ? v : this.v);
         return this.http.get(url, {
-            search: params
+            search: params,
+            headers: headers
         })
             .map(function (response) {
             return response.json().results;
@@ -2441,7 +2457,9 @@ var PatientResourceService = (function () {
     };
     PatientResourceService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["A" /* Injectable */])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_http__["b" /* Http */], __WEBPACK_IMPORTED_MODULE_1__settings_app_settings_service__["a" /* AppSettingsService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_http__["b" /* Http */],
+            __WEBPACK_IMPORTED_MODULE_1__settings_app_settings_service__["a" /* AppSettingsService */],
+            __WEBPACK_IMPORTED_MODULE_3__utils_session_storage_service__["a" /* SessionStorageService */]])
     ], PatientResourceService);
     return PatientResourceService;
 }());
@@ -3317,7 +3335,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/patient-search/patient-search.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"page-content-wrapper\">\r\n\t<div id=\"page-content\">            \r\n\t\t<div class=\"container\">\r\n\t\t\t<div id=\"page-title\">\r\n\t\t\t\t<h2>PATIENT SEARCH</h2>\r\n\t\t\t\t<p>Patient Search</p>\r\n\t\t\t</div>\r\n\r\n\t\t\t<div class=\"row\">\r\n\t\t\t\t<h5 class=\"mrg10A\">6 results found</h5>\r\n\t\t\t</div>\r\n\t\t\t<br>\r\n\r\n\t\t    <div class=\"row\">\r\n\t\t    \t<div class=\"col-md-4\">\t\t    \t\r\n\t                <div class=\"input-group\">\r\n\t                    <input class=\"form-control\" type=\"text\" [(ngModel)]=\"searchString\" placeholder=\"Enter Patient Identifier or Patient Name\">\r\n\t                    <span class=\"input-group-btn\">\r\n\t                        <button class=\"btn btn-primary\" type=\"button\" (click)=\"loadPatient()\">\r\n\t                        \t<b><small>Search</small></b>\r\n\t                        </button>\r\n\t                    </span>\r\n\t                </div>\r\n\t            </div>\r\n\t            <div class=\"col-md-4\">\r\n\t            \t<button class=\"btn btn-primary\" type=\"button\" routerLink=\"/mrsbora/patient-new\">\r\n                    \t <i class=\"glyph-icon icon-plus\"></i>&nbsp;<small>New Patient</small>\r\n                    </button>\r\n\t            </div>\r\n\t\t\t</div>\r\n\r\n\t\t\t<br>\r\n\t\t\t<div class=\"row\">\r\n\t\t\t\t<div class=\"example-box-wrapper\">\r\n\t\t            <div class=\"scroll-columns\">\r\n\t\t                <table id=\"datatable-responsive\" class=\"table table-striped table-bordered responsive no-wrap dataTable dtr-inline\" cellspacing=\"0\" width=\"100%\" role=\"grid\" aria-describedby=\"datatable-responsive_info\" style=\"width: 100%;\">\r\n\t\t                    <thead class=\"cf\">\r\n\t\t                    <tr>\r\n\t\t                        <th><small>IDENTIFIER</small></th>\r\n\t\t\t\t\t\t\t    <th><small>GIVEN NAME</small></th>\r\n\t\t\t\t\t\t\t    <th><small>MIDDLE NAME</small></th>\r\n\t\t\t\t\t\t\t    <th><small>FAMILY NAME</small></th>\r\n\t\t\t\t\t\t\t    <th><small>AGE</small></th>\r\n\t\t\t\t\t\t\t    <th><small>GENDER</small></th>\r\n\t\t\t\t\t\t\t    <th><small>BIRTH DATE</small></th>\r\n\t\t\t\t\t\t\t    <th><small>OPTIONS</small></th>\r\n\t\t                    </tr>\r\n\t\t                    </thead>\r\n\t\t                    <tbody>\r\n\t\t                    <tr style=\"cursor: pointer;\">\r\n\t\t                        <td>Tiger Nixon</td>\r\n\t\t\t\t\t\t\t    <td>System Architect</td>\r\n\t\t\t\t\t\t\t    <td>Edinburgh</td>\r\n\t\t\t\t\t\t\t    <td>61</td>\r\n\t\t\t\t\t\t\t    <td>2011/04/25</td>\r\n\t\t\t\t\t\t\t    <td>$320,800</td>\r\n\t\t\t\t\t\t\t    <td>2011/04/25</td>\r\n\t\t\t\t\t\t\t    <td><span><a routerLink=\"/mrsbora/reception/new\">Select</a></span></td>\r\n\t\t                    </tr>\r\n\t\t                    <tr style=\"cursor: pointer;\">\r\n\t\t\t\t\t\t\t    <td>Garrett Winters</td>\r\n\t\t\t\t\t\t\t    <td>Accountant</td>\r\n\t\t\t\t\t\t\t    <td>Tokyo</td>\r\n\t\t\t\t\t\t\t    <td>63</td>\r\n\t\t\t\t\t\t\t    <td>2011/07/25</td>\r\n\t\t\t\t\t\t\t    <td>$170,750</td>\r\n\t\t\t\t\t\t\t    <td>2011/04/25</td>\r\n\t\t\t\t\t\t\t    <td><span><a routerLink=\"/mrsbora/reception/new\">Select</a></span></td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t    <td>Garrett Winters</td>\r\n\t\t\t\t\t\t\t    <td>Accountant</td>\r\n\t\t\t\t\t\t\t    <td>Tokyo</td>\r\n\t\t\t\t\t\t\t    <td>63</td>\r\n\t\t\t\t\t\t\t    <td>2011/07/25</td>\r\n\t\t\t\t\t\t\t    <td>$170,750</td>\r\n\t\t\t\t\t\t\t    <td>2011/04/25</td>\r\n\t\t\t\t\t\t\t    <td><span><a routerLink=\"/mrsbora/reception/new\">Select</a></span></td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t    <td>Garrett Winters</td>\r\n\t\t\t\t\t\t\t    <td>Accountant</td>\r\n\t\t\t\t\t\t\t    <td>Tokyo</td>\r\n\t\t\t\t\t\t\t    <td>63</td>\r\n\t\t\t\t\t\t\t    <td>2011/07/25</td>\r\n\t\t\t\t\t\t\t    <td>$170,750</td>\r\n\t\t\t\t\t\t\t    <td>2011/04/25</td>\r\n\t\t\t\t\t\t\t    <td><span><a routerLink=\"/mrsbora/reception/new\">Select</a></span></td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t    <td>Garrett Winters</td>\r\n\t\t\t\t\t\t\t    <td>Accountant</td>\r\n\t\t\t\t\t\t\t    <td>Tokyo</td>\r\n\t\t\t\t\t\t\t    <td>63</td>\r\n\t\t\t\t\t\t\t    <td>2011/07/25</td>\r\n\t\t\t\t\t\t\t    <td>$170,750</td>\r\n\t\t\t\t\t\t\t    <td>2011/04/25</td>\r\n\t\t\t\t\t\t\t    <td><span><a routerLink=\"/mrsbora/reception/new\">Select</a></span></td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t    <td>Garrett Winters</td>\r\n\t\t\t\t\t\t\t    <td>Accountant</td>\r\n\t\t\t\t\t\t\t    <td>Tokyo</td>\r\n\t\t\t\t\t\t\t    <td>63</td>\r\n\t\t\t\t\t\t\t    <td>2011/07/25</td>\r\n\t\t\t\t\t\t\t    <td>$170,750</td>\r\n\t\t\t\t\t\t\t    <td>2011/04/25</td>\r\n\t\t\t\t\t\t\t    <td><span><a routerLink=\"/mrsbora/reception/new\">Select</a></span></td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t\t</table>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</div>                \r\n\t\t\t</div>\r\n\r\n\t\t\t\r\n\r\n\t\t</div>\r\n\t</div>\r\n</div>"
+module.exports = "<div id=\"page-content-wrapper\">\r\n\t<div id=\"page-content\">            \r\n\t\t<div class=\"container\">\r\n\t\t\t<div id=\"page-title\">\r\n\t\t\t\t<h2>PATIENT SEARCH</h2>\r\n\t\t\t\t<p>Patient Search</p>\r\n\t\t\t</div>\r\n\r\n\t\t\t<div class=\"row\">\r\n\t\t\t\t<h5 class=\"mrg10A\">{{ totalPatients }} results found {{ patientSearchString }}</h5>\r\n\t\t\t</div>\r\n\t\t\t<br>\r\n\r\n\t\t    <div class=\"row\">\r\n\t\t    \t<div class=\"col-md-4\">\t\t    \t\r\n\t                <div class=\"input-group\">\r\n\t                    <input class=\"form-control\" type=\"text\" [(ngModel)]=\"searchString\" placeholder=\"Enter Patient Name\">\r\n\t                    <span class=\"input-group-btn\">\r\n\t                        <button class=\"btn btn-primary\" type=\"button\" (click)=\"loadPatient()\">\r\n\t                        \t<b><small>Search</small></b>\r\n\t                        </button>\r\n\t                    </span>\r\n\t                </div>\r\n\t            </div>\r\n\r\n\t            <div class=\"col-md-4\">\r\n\t            \t<button class=\"btn btn-primary\" type=\"button\" routerLink=\"/mrsbora/patient-new\">\r\n                    \t <i class=\"glyph-icon icon-plus\"></i>&nbsp;<small>New Patient</small>\r\n                    </button>\r\n\t            </div>\r\n\t\t\t</div>\r\n\r\n\t\t\t<br>\r\n\t\t\t<div class=\"row\" style=\"width: 100%; margin: 0px auto;\" *ngIf=\"isLoading\" class=\"glyph-icon remove-border demo-icon tooltip-button icon-spin-5 icon-spin\" title=\"\" data-original-title=\"icon-spin-5\" align=\"center\">\r\n\t\t\t</div>\r\n\r\n\t\t\t<br>\r\n\t\t\t<div *ngIf=\"totalPatients > 0\" class=\"row\">\r\n\t\t\t\t<!--<div class=\"row\" *ngIf=\"noMatchingResults===false\">-->\r\n\t\t\t\t<div class=\"example-box-wrapper\">\r\n\t\t            <div class=\"scroll-columns\">\r\n\t\t                <table id=\"datatable-responsive\" class=\"table table-hover table-bordered responsive no-wrap dataTable dtr-inline\" cellspacing=\"0\" width=\"100%\" role=\"grid\" aria-describedby=\"datatable-responsive_info\" style=\"width: 100%; background-color:white;\">\r\n\t\t                    <thead>\r\n\t\t                    <tr>\r\n\t\t                        <th>#</th>\r\n\t\t\t\t\t\t\t\t<th>Identifier(s)</th>\r\n\t\t\t\t\t\t\t\t<th>Patient Name</th>\r\n\t\t\t\t\t\t\t\t<th>Gender</th>\r\n\t\t\t\t\t\t\t\t<th>Age</th>\r\n\t\t                    </tr>\r\n\t\t                    </thead>\r\n\t\t                    <tbody>\r\n\t\t                    \t<!--<tr style=\"cursor: pointer;\">-->\r\n\t\t                    \t\r\n\t\t\t                    <tr role=\"row\" class=\"odd\" style=\"cursor: pointer;\" (click)='selectPatient(patient)' *ngFor=\"let patient of patients | paginate: { itemsPerPage: 10, currentPage: page }; let i = index; \">\r\n\r\n\t\t\t\t\t\t\t\t\t<td>{{ (i + 1)+ (page - 1) * 10 }}</td>\r\n\t\t\t                        <td>\r\n\t\t\t\t\t\t\t\t\t\t<span *ngIf=\"patient.searchIdentifiers.default\">{{patient.searchIdentifiers.default}}</span>\t\t\t\r\n\t\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{patient.person.display}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{patient.person.gender}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{patient.person.age}}</td>\r\n\t\t\t                    </tr>\r\n\t\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t\t</table>\r\n\t\t\t\t\t</div>\r\n\r\n\t\t\t\t\t<br>\r\n\t\t\t\t\t\r\n\r\n\t\t\t\t\t<br>\r\n\t\t\t\t\t<div class=\"row\">\r\n\t\t\t\t\t\t<div class=\"col-sm-6\">\r\n\t\t\t\t\t\t\t<div class=\"dataTables_info\" id=\"datatable-responsive_info\" role=\"status\" aria-live=\"polite\">\r\n\t\t\t\t\t\t\t\t<p *ngIf=\"totalPatients > 10\">Showing 1 to 10 of {{ totalPatients }} entries</p> \r\n\t\t\t\t\t\t\t\t<p *ngIf=\"totalPatients < 10\">Showing {{ totalPatients }} of {{ totalPatients }} entries</p>  \r\n\t\t\t\t\t\t\t</div>\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t\t<div class=\"col-sm-6 dataTables_paginate paging_bootstrap\">\r\n\t\t\t\t\t\t\t<pagination-controls (pageChange)=\"page = $event\" style=\"cursor: pointer;\"></pagination-controls>\r\n\t\t\t\t\t\t</div>\r\n                    </div>\r\n\t\t\t\t</div>                \r\n\t\t\t</div>\r\n\r\n\t\t\t\r\n\r\n\t\t</div>\r\n\t</div>\r\n</div>"
 
 /***/ }),
 
@@ -3327,7 +3345,9 @@ module.exports = "<div id=\"page-content-wrapper\">\r\n\t<div id=\"page-content\
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PatientSearchComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__patient_search_service__ = __webpack_require__("../../../../../src/app/patient-search/patient-search.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__("../../../router/esm5/router.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_local_storage_service__ = __webpack_require__("../../../../../src/app/utils/local-storage.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__patient_search_service__ = __webpack_require__("../../../../../src/app/patient-search/patient-search.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3339,9 +3359,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
+
 var PatientSearchComponent = (function () {
-    function PatientSearchComponent(patientSearchService) {
+    function PatientSearchComponent(patientSearchService, localStorageService, router) {
         this.patientSearchService = patientSearchService;
+        this.localStorageService = localStorageService;
+        this.router = router;
         this.isResetButton = true;
         this.isLoading = false;
         this.hasConductedSearch = false;
@@ -3349,6 +3373,7 @@ var PatientSearchComponent = (function () {
         this.adjustInputMargin = '240px';
         this.title = 'Patient Search';
         this.errorMessage = '';
+        this.noMatchingResults = false;
         /*
         patientSelected emits the patient object
         to other components so they can use
@@ -3373,7 +3398,10 @@ var PatientSearchComponent = (function () {
         enumerable: true,
         configurable: true
     });
-    PatientSearchComponent.prototype.ngOnInit = function () { };
+    PatientSearchComponent.prototype.ngOnInit = function () {
+        this.totalPatients = 0;
+        this.noMatchingResults = true;
+    };
     PatientSearchComponent.prototype.ngOnDestroy = function () { };
     PatientSearchComponent.prototype.onResultsFound = function (results) {
         if (results.length > 0) {
@@ -3387,7 +3415,7 @@ var PatientSearchComponent = (function () {
             this.hideResults = true;
         }
         // clear the search text
-        this.searchString = '';
+        this.patientSearchString = ' matching "' + this.searchString + '"';
         this.hasConductedSearch = true;
     };
     PatientSearchComponent.prototype.onError = function (error) {
@@ -3399,7 +3427,7 @@ var PatientSearchComponent = (function () {
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
-        if (this.searchString && this.searchString.length > 2) {
+        if (this.searchString && this.searchString.length > 3) {
             this.isLoading = true;
             this.patients = [];
             this.errorMessage = '';
@@ -3408,12 +3436,21 @@ var PatientSearchComponent = (function () {
                 _this.isLoading = false;
                 _this.onResultsFound(data);
                 _this.resetInputMargin();
+                if (data.length === 0) {
+                    _this.noMatchingResults = true;
+                }
                 // app feature analytics
                 // this.appFeatureAnalytics.trackEvent('Patient Search', 'Patients Searched', 'loadPatient');
             }, function (error) {
                 _this.onError(error);
             });
         }
+    };
+    PatientSearchComponent.prototype.selectPatient = function (patient) {
+        //this.patientSelected.emit(patient);
+        // this.hideResults = true;
+        this.localStorageService.setObject('patient', patient);
+        this.router.navigate(['/mrsbora/reception/new']);
     };
     PatientSearchComponent.prototype.resetInputMargin = function () { };
     __decorate([
@@ -3429,7 +3466,9 @@ var PatientSearchComponent = (function () {
             template: __webpack_require__("../../../../../src/app/patient-search/patient-search.component.html"),
             styles: [__webpack_require__("../../../../../src/app/patient-search/patient-search.component.css")]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__patient_search_service__["a" /* PatientSearchService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__patient_search_service__["a" /* PatientSearchService */],
+            __WEBPACK_IMPORTED_MODULE_2__utils_local_storage_service__["a" /* LocalStorageService */],
+            __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */]])
     ], PatientSearchComponent);
     return PatientSearchComponent;
 }());
@@ -3483,7 +3522,6 @@ var PatientSearchService = (function () {
             patientsSearchResults.next(mappedPatients);
             _this.patientsSearchResults.next(mappedPatients);
         }, function (error) {
-            // console.log('error : ' + error);
             _this.patientsSearchResults.error(error); // test case that returns error
             patientsSearchResults.error(error);
         });
@@ -3664,21 +3702,45 @@ module.exports = "<div class=\"row col-md-12\">\r\n\t<br>\r\n\t    <div class=\"
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ReceptionNewComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__("../../../router/esm5/router.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_local_storage_service__ = __webpack_require__("../../../../../src/app/utils/local-storage.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
 
 var ReceptionNewComponent = (function () {
-    function ReceptionNewComponent() {
+    function ReceptionNewComponent(localStorageService, router) {
+        this.localStorageService = localStorageService;
+        this.router = router;
     }
+    ReceptionNewComponent.prototype.ngOnInit = function () {
+        // let patientUuid = this.getSelectedPatient();
+        var patient = this.localStorageService.getObject('patient');
+        console.log(patient);
+    };
+    ReceptionNewComponent.prototype.getSelectedPatient = function () {
+        // let patient =this.localStorageService.getObject('patient');
+        // this.patientUuid = patient.uuid;	
+    };
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["P" /* Output */])(),
+        __metadata("design:type", String)
+    ], ReceptionNewComponent.prototype, "patientUuid", void 0);
     ReceptionNewComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
             template: __webpack_require__("../../../../../src/app/reception/new.component.html"),
             styles: [__webpack_require__("../../../../../src/app/reception/new.component.css")]
-        })
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__utils_local_storage_service__["a" /* LocalStorageService */],
+            __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */]])
     ], ReceptionNewComponent);
     return ReceptionNewComponent;
 }());
@@ -4305,10 +4367,12 @@ var AppSettingsService = (function () {
     function AppSettingsService(localStorageService) {
         this.localStorageService = localStorageService;
         this._openmrsServerUrls = [
-            'http://localhost:8080/openmrs'
+            // 'http://localhost:8080/openmrs'
+            'https://mrsbora.kemri-ucsf.org:8080/openmrs/'
         ];
         this._etlServerUrls = [
-            'http://localhost:8002/etl'
+            // 'http://localhost:8002/etl'
+            'https://mrsbora.kemri-ucsf.org:8080/openmrs/'
         ];
         this.templates = [];
         var cachedUrls = localStorageService.getObject(AppSettingsService_1.OPENMRS_LIST_STORAGE_KEY);
@@ -4414,8 +4478,19 @@ var AppSettingsService = (function () {
             return this.getEtlServer() + '/';
         }
     };
-    AppSettingsService.DEFAULT_OPENMRS_SERVER_URL = 'http://localhost:8080/openmrs';
-    AppSettingsService.DEFAULT_ETL_SERVER_URL = 'http://localhost:8080/openmrs/etl';
+    // FOR DEVELOPMENT
+    /*
+    public static readonly DEFAULT_OPENMRS_SERVER_URL = 'http://localhost:8080/openmrs';
+    public static readonly DEFAULT_ETL_SERVER_URL = 'http://localhost:8080/openmrs/etl';
+    public static readonly OPENMRS_LIST_STORAGE_KEY = 'appSettings.openmrsServersList';
+    public static readonly ETL_LIST_STORAGE_KEY = 'appSettings.etlServersList';
+    public static readonly OPENMRS_SERVER_KEY = 'appSettings.openmrsServer';
+    public static readonly ETL_SERVER_KEY = 'appSettings.etlServer';
+    private static readonly OPENMRS_REST_SUFFIX = 'ws/rest/v1/';
+    */
+    // FOR PRODUCTION
+    AppSettingsService.DEFAULT_OPENMRS_SERVER_URL = 'https://mrsbora.kemri-ucsf.org:8080/openmrs';
+    AppSettingsService.DEFAULT_ETL_SERVER_URL = 'https://mrsbora.kemri-ucsf.org:8080/openmrs/etl';
     AppSettingsService.OPENMRS_LIST_STORAGE_KEY = 'appSettings.openmrsServersList';
     AppSettingsService.ETL_LIST_STORAGE_KEY = 'appSettings.etlServersList';
     AppSettingsService.OPENMRS_SERVER_KEY = 'appSettings.openmrsServer';
@@ -4444,6 +4519,7 @@ var Constants = (function () {
     Constants.CREDENTIALS_KEY = 'auth.credentials';
     Constants.USER_KEY = 'user';
     Constants.USER_ROLES = 'userroles';
+    Constants.SESSION_ID = 'jsessionid';
     return Constants;
 }());
 
